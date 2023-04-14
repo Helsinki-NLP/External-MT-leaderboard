@@ -1,0 +1,89 @@
+# -*-makefile-*-
+#
+# template for evaluating translation models
+#
+# What you need to do is
+#
+#   * set the model-specific variables MODELS, MODEL_LANGPAIRS, MODEL_URL and MODEL_EVAL_URL
+#   * implement a recipe for fetching and installing the model / translation tool
+#   * implement a recipe for translating a text file from our benchmark collection
+#
+#-----------------------------------------------------------------------------
+# Pre-requisites:
+#
+#   sacrebleu
+#   comet
+#
+#-----------------------------------------------------------------------------
+
+
+
+## specify all model variants
+## the format should follow the pattern <subdir>/<modelname>
+##  - where <subdir> typically refers to the general language pair the model serves (could be language groups as well)
+##  - and <modelname> is a unique name for the model without file extensions
+
+MODELS := xxx-yyy/model1-name xxx-yyy/model2-name
+MODEL  ?= $(firstword ${MODELS})
+
+
+## all language pairs that the model supports
+## use language IDs that match test sets in the OPUS-MT-testsets repository
+
+MODEL_LANGPAIRS := deu-eng eng-deu fin-swe
+
+
+## MODEL_URL: location of the public model (to be stored in the score files)
+## MODEL_EVAL_URL: location of the storage space for the evaluation output files
+
+MODEL_URL       := https://location-of-my-model-storage/${MODEL}
+MODEL_EVAL_URL  := https://location-of-my-model-storage/${MODEL}.eval.zip
+
+
+## typically 'make all' means eval all models
+## add whatever is necessary here
+
+.PHONY: all
+all: eval-models
+
+
+
+## all kinds of common evaluation recipes and variables
+## no changes needed (hopefully)
+
+PWD      := ${shell pwd}
+REPOHOME := ${PWD}/../../
+
+include ../lib/config.mk
+include ../lib/eval.mk
+
+
+##-----------------------------------------------------------------------------
+##
+## implement the following two targets!
+##
+##   fetch-model: fetching and setting up the model
+##   ${WORK_DIR}/%.${LANGPAIR}.output: translating a file from our benchmark collection
+##
+##-----------------------------------------------------------------------------
+
+
+## implement a recipe for fetching the model and setting everything up
+
+.PHONY: fetch-model
+fetch-model:
+	@echo "fetching model ${MODEL} ..."
+
+
+## implement a recipe for translating a benchmark from SRC to TRG
+## recipes in ../lib/eval.mk make sure that we run through all benchmarks
+## for all supported language pairs (specified by MODEL_LANGPAIRS)
+## SRC and TRG will be taken from each supported language pair
+
+${WORK_DIR}/%.${LANGPAIR}.output: ${TESTSET_DIR}/%.${SRC} ${TESTSET_DIR}/%.${TRG}
+	@echo "translate $< from ${SRC} to ${TRG} using ${MODEL} ...."
+	mkdir -p $(dir $@)
+	my-fancy-translation-tool -model /path/to/${MODEL} -from ${SRC} -to ${TRG} < $< > $@
+
+
+

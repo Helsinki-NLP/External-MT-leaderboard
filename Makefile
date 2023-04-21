@@ -5,31 +5,15 @@ PWD      := ${shell pwd}
 REPOHOME := ${PWD}/
 
 
-## directory with leaderboard files depending on the source of the models
-##   - default = OPUS-MT models (stored in scores/)
-##   - external models (stored in external-scores/)
-##   - contributed tanslations (stored in user-scores/)
-##   - all scores merged (stored in merged-scores/)
-
-ifdef LANGPAIRDIR
-  LEADERBOARD_DIR = $(firstword $(subst /, ,${LANGPAIRDIR}))
-  LANGPAIR = $(lastword $(subst /, ,${LANGPAIRDIR}))
-endif
-
-ifeq (${MODELSOURCE},external)
-  LEADERBOARD_DIR = external-scores
-else ifeq (${MODELSOURCE},contributed)
-  LEADERBOARD_DIR = user-scores
-else ifeq (${MODELSOURCE},all)
-  LEADERBOARD_DIR = merged-scores
-else
-  LEADERBOARD_DIR = scores
-endif
-
 
 ## all language pairs and all evaluation metrics
-LANGPAIRS  := $(sort $(notdir $(wildcard ${LEADERBOARD_DIR}/*-*)))
+LANGPAIRS  := $(sort $(notdir $(wildcard scores/*-*)))
 METRICS    := bleu spbleu chrf chrf++ comet
+
+
+ifdef LANGPAIRDIR
+  LANGPAIR = $(lastword $(subst /, ,${LANGPAIRDIR}))
+endif
 
 
 ## default language pair and metric
@@ -40,7 +24,7 @@ METRIC     ?= $(firstword ${METRICS})
 
 ## all score files for the selected metric
 
-METRICFILES = ${sort ${wildcard ${LEADERBOARD_DIR}/${LANGPAIR}/*/${METRIC}-scores.txt}}
+METRICFILES = ${sort ${wildcard scores/${LANGPAIR}/*/${METRIC}-scores.txt}}
 
 
 ## UPDATE_SCORE_DIRS   = directory that contains new scores
@@ -49,10 +33,10 @@ METRICFILES = ${sort ${wildcard ${LEADERBOARD_DIR}/${LANGPAIR}/*/${METRIC}-score
 ##    (for the selected LANGPAIR otherwise)
 
 ifeq (${UPDATE_ALL_LEADERBOARDS},1)
-  UPDATE_SCORE_DIRS := $(sort $(dir ${wildcard ${LEADERBOARD_DIR}/*/*/*.unsorted.txt}))
-  UPDATE_LANGPAIRS  := $(sort $(dir $(patsubst ${LEADERBOARD_DIR}/%/,%,${UPDATE_SCORE_DIRS})))
+  UPDATE_SCORE_DIRS := $(sort $(dir ${wildcard scores/*/*/*.unsorted.txt}))
+  UPDATE_LANGPAIRS  := $(sort $(dir $(patsubst scores/%/,%,${UPDATE_SCORE_DIRS})))
 else
-  UPDATE_SCORE_DIRS := $(sort $(dir ${wildcard ${LEADERBOARD_DIR}/${LANGPAIR}/*/*.unsorted.txt}))
+  UPDATE_SCORE_DIRS := $(sort $(dir ${wildcard scores/${LANGPAIR}/*/*.unsorted.txt}))
   UPDATE_LANGPAIRS  := ${LANGPAIR}
 endif
 UPDATE_LEADERBOARDS := $(foreach m,${METRICS},$(patsubst %,%$(m)-scores.txt,${UPDATE_SCORE_DIRS}))
@@ -63,12 +47,20 @@ LANGPAIR_LISTS  := scores/langpairs.txt external-scores/langpairs.txt user-score
 BENCHMARK_LISTS := scores/benchmarks.txt external-scores/benchmarks.txt user-scores/benchmarks.txt
 
 .PHONY: all
-all: ${LEADERBOARD_DIR}
-	@find ${LEADERBOARD_DIR} -name '*unsorted*' -empty -delete
+all: scores
+	@find scores -name '*unsorted*' -empty -delete
 	${MAKE} -s refresh-leaderboards
-	${MAKE} -s released-models.txt release-history.txt
-	${MAKE} -s ${LANGPAIR_LISTS} ${BENCHMARK_LISTS}
-	find ${LEADERBOARD_DIR}/ -name '*.txt' | grep -v unsorted | xargs git add
+	${MAKE} -s scores/langpairs.txt scores/benchmarks.txt
+	find scores/ -name '*.txt' | grep -v unsorted | xargs git add
+
+.PHONY: all-langpairs
+all-langpairs:
+	@find scores -name '*unsorted*' -empty -delete
+	${MAKE} -s update-all-leaderboards
+	${MAKE} -s scores/langpairs.txt scores/benchmarks.txt
+	find scores/ -name '*.txt' | grep -v unsorted | xargs git add
+
+
 
 USER_CONTRIBUTED_FILES  := $(shell find models/unverified -type f -name '*.output')
 USER_CONTRIBUTED_FILE   ?= $(firstword ${USER_CONTRIBUTED_FILES})
@@ -127,14 +119,6 @@ fetch-zipfiles:
 
 
 
-
-.PHONY: all-external
-all-external:
-	find external-scores -name '*unsorted*' -empty -delete
-	${MAKE} -s MODELSOURCE=external update-all-leaderboards
-	${MAKE} -s external-scores/langpairs.txt external-scores/benchmarks.txt
-	find external-scores/ -name '*.txt' | grep -v unsorted | xargs git add
-
 .PHONY: all-contributed
 all-contributed:
 	find user-scores -name '*unsorted*' -empty -delete
@@ -145,7 +129,7 @@ all-contributed:
 
 .PHONY: langpair-scores
 langpair-scores:
-	@find ${LEADERBOARD_DIR} -name '*unsorted*' -empty -delete
+	@find scores -name '*unsorted*' -empty -delete
 	@for l in ${UPDATE_LANGPAIRS}; do \
 	  echo "extract top/avg scores for $$l"; \
 	  ${MAKE} -s LANGPAIR=$$l UPDATE_ALL_LEADERBOARDS=0 top-scores; \
@@ -155,7 +139,7 @@ langpair-scores:
 
 .PHONY: all-langpair-scores
 all-langpair-scores:
-	@find ${LEADERBOARD_DIR} -name '*unsorted*' -empty -delete
+	@find scores -name '*unsorted*' -empty -delete
 	@for l in ${LANGPAIRS}; do \
 	  echo "extract top/avg scores for $$l"; \
 	  ${MAKE} -s LANGPAIR=$$l UPDATE_ALL_LEADERBOARDS=0 top-scores; \
@@ -165,7 +149,7 @@ all-langpair-scores:
 
 .PHONY: all-avg-scores
 all-avg-scores:
-	@find ${LEADERBOARD_DIR} -name '*unsorted*' -empty -delete
+	@find scores -name '*unsorted*' -empty -delete
 	@for l in ${LANGPAIRS}; do \
 	  echo "extract avg scores for $$l"; \
 	  ${MAKE} -s LANGPAIR=$$l UPDATE_ALL_LEADERBOARDS=0 avg-scores; \
@@ -173,7 +157,7 @@ all-avg-scores:
 
 .PHONY: all-top-scores
 all-top-scores:
-	@find ${LEADERBOARD_DIR} -name '*unsorted*' -empty -delete
+	@find scores -name '*unsorted*' -empty -delete
 	@for l in ${LANGPAIRS}; do \
 	  echo "extract top scores for $$l"; \
 	  ${MAKE} -s LANGPAIR=$$l UPDATE_ALL_LEADERBOARDS=0 top-scores; \
@@ -181,7 +165,7 @@ all-top-scores:
 
 .PHONY: all-model-lists
 all-model-lists:
-	@find ${LEADERBOARD_DIR} -name '*unsorted*' -empty -delete
+	@find scores -name '*unsorted*' -empty -delete
 	@for l in ${LANGPAIRS}; do \
 	  echo "extract model lists $$l"; \
 	  ${MAKE} -s LANGPAIR=$$l UPDATE_ALL_LEADERBOARDS=0 model-list; \
@@ -231,7 +215,7 @@ update-all-leaderboards-loop:
 ## another solution: use find
 .PHONY: update-all-leaderboards-find
 update-all-leaderboards-find:
-	find ${LEADERBOARD_DIR} -maxdepth 1 -mindepth 1 -type d \
+	find scores -maxdepth 1 -mindepth 1 -type d \
 		-exec ${MAKE} -s LANGPAIRDIR={} update-leaderboards \;
 
 
@@ -253,26 +237,26 @@ release-history.txt: released-models.txt
 	rm -f $@.langpair $@.model $@.date $@.pkg
 
 .PHONY: model-list
-model-list: ${LEADERBOARD_DIR}/${LANGPAIR}/model-list.txt
+model-list: scores/${LANGPAIR}/model-list.txt
 
-${LEADERBOARD_DIR}/${LANGPAIR}/model-list.txt: ${METRICFILES}
+scores/${LANGPAIR}/model-list.txt: ${METRICFILES}
 	find ${dir $@} -name 'bleu-scores.txt' | xargs cut -f2 | sort -u > $@
 
 .PHONY: top-score-file top-scores
-top-score-file: ${LEADERBOARD_DIR}/${LANGPAIR}/top-${METRIC}-scores.txt
+top-score-file: scores/${LANGPAIR}/top-${METRIC}-scores.txt
 top-scores:
 	@for m in ${METRICS}; do \
 	  ${MAKE} -s METRIC=$$m top-score-file; \
 	done
 
 .PHONY: avg-score-file avg-scores
-avg-score-file: ${LEADERBOARD_DIR}/${LANGPAIR}/avg-${METRIC}-scores.txt
+avg-score-file: scores/${LANGPAIR}/avg-${METRIC}-scores.txt
 avg-scores:
 	@for m in ${METRICS}; do \
 	  ${MAKE} -s METRIC=$$m avg-score-file; \
 	done
 
-${LEADERBOARD_DIR}/${LANGPAIR}/top-${METRIC}-scores.txt: ${METRICFILES}
+scores/${LANGPAIR}/top-${METRIC}-scores.txt: ${METRICFILES}
 	@rm -f $@
 	@for f in $^; do \
 	  if [ -s $$f ]; then \
@@ -282,13 +266,13 @@ ${LEADERBOARD_DIR}/${LANGPAIR}/top-${METRIC}-scores.txt: ${METRICFILES}
 	  fi \
 	done
 
-${LEADERBOARD_DIR}/${LANGPAIR}/avg-${METRIC}-scores.txt: ${METRICFILES}
+scores/${LANGPAIR}/avg-${METRIC}-scores.txt: ${METRICFILES}
 	tools/average-scores.pl $^ > $@
 
 ${UPDATE_LEADERBOARDS}: ${UPDATE_SCORE_DIRS}
 	@if [ -e $@ ]; then \
 	  if [ $(words $(wildcard ${@:.txt=}*.unsorted.txt)) -gt 0 ]; then \
-	    echo "merge and sort ${patsubst ${LEADERBOARD_DIR}/%,%,$@}"; \
+	    echo "merge and sort ${patsubst scores/%,%,$@}"; \
 	    sort -k2,2 -k1,1nr $@                           > $@.old.txt; \
 	    cat $(wildcard ${@:.txt=}*.unsorted.txt) | \
 	    grep '^[0-9\-]' | sort -k2,2 -k1,1nr            > $@.new.txt; \
@@ -300,7 +284,7 @@ ${UPDATE_LEADERBOARDS}: ${UPDATE_SCORE_DIRS}
 	  fi; \
 	else \
 	  if [ $(words $(wildcard ${@:.txt=}*.txt)) -gt 0 ]; then \
-	    echo "merge and sort ${patsubst ${LEADERBOARD_DIR}/%,%,$@}"; \
+	    echo "merge and sort ${patsubst scores/%,%,$@}"; \
 	    cat $(wildcard ${@:.txt=}*.txt) | grep '^[0-9\-]' |\
 	    sort -k2,2 -k1,1nr | uniq -f1 | sort -k1,1nr -u > $@.sorted; \
 	    rm -f $(wildcard ${@:.txt=}*.txt); \
@@ -319,27 +303,6 @@ ${UPDATE_LEADERBOARDS}: ${UPDATE_SCORE_DIRS}
 	  echo -n "$$b	" >> $@; \
 	  find $(dir $@) -name "$$b" -type d | cut -f2 -d/ | sort -u | tr "\n" ' ' >> $@; \
 	  echo "" >> $@; \
-	done
-
-
-
-
-## merge external and internal scores
-## TODO: do we really want to create a copy of all files?
-
-MERGED_METRICFILES = $(patsubst ${LEADERBOARD_DIR}/%,merged-scores/%,${METRICFILES})
-
-.PHONY: merge-with-external
-merge-with-external: ${MERGED_METRICFILES}
-${MERGED_METRICFILES}: merged-scores/%: ${LEADERBOARD_DIR}/%
-	mkdir (dir $@)
-	-cat $< $(patsubst merged-scores/%,external-scores/%,$@) |\
-	sort -k1,1nr -u | uniq -f2 > $@
-
-.PHONY: merge-all-scores
- merge-all-scores:
-	@for l in ${LANGPAIRS}; do \
-	  ${MAKE} -s LANGPAIR=$$l UPDATE_ALL_LEADERBOARDS=0 merge-with-external; \
 	done
 
 

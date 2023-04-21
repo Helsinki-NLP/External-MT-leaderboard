@@ -26,7 +26,7 @@ MODEL_INFO       ?= $(firstword ${MODELS_INFO})
 ##  - MODEL_SRCLANG = target language used on HF
 
 COMMA            := ,
-MODEL_HOME       := ${PWD}/..
+MODEL_HOME       := ${PWD}
 MODEL            := $(word 1,$(subst ${COMMA}, ,${MODEL_INFO}))
 MODEL_SRCLANG    := $(word 2,$(subst ${COMMA}, ,${MODEL_INFO}))
 MODEL_TRGLANG    := $(word 3,$(subst ${COMMA}, ,${MODEL_INFO}))
@@ -39,11 +39,11 @@ TESTSET_TRGLANG  := $(shell iso639 -3 -k ${MODEL_TRGLANG})
 MODEL_LANGPAIRS  := ${TESTSET_SRCLANG}-${TESTSET_TRGLANG}
 
 
-## MODEL_URL: location of the public model (to be stored in the score files)
+## MODEL_URL: location of the model within this repo relative to models/
 ## MODEL_STORAGE: bucket for evaluation output zip-files
 ## MODEL_EVAL_URL: location of the storage space for the evaluation output files
 
-MODEL_URL       := https://huggingface.co/${MODEL}
+MODEL_URL       := huggingface/${MODEL}
 MODEL_STORAGE   := https://object.pouta.csc.fi/External-MT-models
 MODEL_EVAL_URL  := ${MODEL_STORAGE}/${MODEL}.eval.zip
 

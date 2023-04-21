@@ -10,11 +10,9 @@
 PWD      := ${shell pwd}
 REPOHOME := ${PWD}/../
 
-ALL_SOURCES      := $(filter-out lib,$(notdir ${shell find . -maxdepth 1 -mindepth 1 -type d}))
-OPUSMT_SOURCES   := OPUS-MT-models Tatoeba-MT-models
-EXTERNAL_SOURCES := $(filter-out ${OPUSMT_SOURCES} unverified,${ALL_SOURCES})
+ALL_SOURCES      := $(filter-out lib,$(notdir ${shell find . -maxdepth 1 -mindepth 2 -type d}))
 
-SOURCE     ?= facebook
+SOURCE     ?= huggingface/facebook
 MODEL_HOME ?= ${SOURCE}
 MODEL      ?= nllb-200-distilled-600M
 
@@ -53,23 +51,6 @@ register-all:
 	  ${MAKE} SOURCE=$$s ALL_MODELS=1 register; \
 	done
 
-.PHONY: register-opusmt
-register-opusmt: register-opus-mt register-tatoeba-mt
-
-.PHONY: register-opus-mt
-register-opus-mt:
-	${MAKE} SOURCE=OPUS-MT-models ALL_MODELS=1 register
-
-.PHONY: register-tatoeba-mt
-register-tatoeba-mt:
-	${MAKE} SOURCE=Tatoeba-MT-models ALL_MODELS=1 register
-
-.PHONY: register-external
-register-external:
-	for s in ${EXTERNAL_SOURCES}; do \
-	  ${MAKE} SOURCE=$$s ALL_MODELS=1 register; \
-	done
-
 .PHONY: register-contributed
 register-contributed:
 	${MAKE} SOURCE=unverified ALL_MODELS=1 register
@@ -105,7 +86,7 @@ ${MODEL_HOME}/%-scores.registered: ${MODEL_HOME}/%-scores.txt
 
 
 
-STORAGE_BUCKET = OPUS-MT-leaderboard
+STORAGE_BUCKET = External-MT-leaderboard
 STORAGE_URL   := https://object.pouta.csc.fi/${STORAGE_BUCKET}
 
 .PHONY: upload upload-eval-files

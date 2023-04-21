@@ -6,7 +6,7 @@
 PWD      := ${shell pwd}
 REPOHOME := ${PWD}/../../
 
-MODEL_HOME       := ${PWD}/..
+MODEL_HOME       := ${PWD}
 MODELS_FILE      := output/pipeline_models_rev.csv
 MODELS           := $(shell tail -n +2 < ${MODELS_FILE} | cut -f1 -d, | sort -u)
 MODEL            ?= $(firstword ${MODELS})
@@ -19,7 +19,7 @@ MODEL_LANGPAIRS  := $(shell grep '${MODEL}' ${MODELS_FILE} | \
 ## MODEL_EVAL_URL: location of the storage space for the evaluation output files
 ## 	TODO: make sure that this is correct and also saved somewhere!
 
-MODEL_URL       := https://huggingface.co/${MODEL}
+MODEL_URL       := huggingface/${MODEL}
 MODEL_STORAGE   := https://object.pouta.csc.fi/External-MT-models
 MODEL_EVAL_URL  := ${MODEL_STORAGE}/${MODEL}.eval.zip
 

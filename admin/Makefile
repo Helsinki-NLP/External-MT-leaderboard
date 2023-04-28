@@ -1,6 +1,8 @@
 # -*-makefile-*-
 
 
+PWD ?= $(shell pwd)
+
 ## devsets that should be removed
 
 DEVSETS := $(sort $(shell cut -f1 ../scores/benchmarks.txt | grep dev | grep -v devtest))
@@ -19,6 +21,13 @@ REMOVE_PATTERN := $(sort $(subst ${SPACE},|,${REMOVE}))
 
 TOPSCORE_FILES   := $(wildcard ../scores/*/top-*.txt)
 MODELSCORE_FILES := $(shell find ../models -name '*.txt')
+
+
+## zip files with evaluation results
+## extra zip files with evaluation results on dev sets
+
+EVALZIP_FILES := $(shell find ../models -name '*.eval.zip')
+EVALZIP_DEV   := $(patsubst %.eval.zip,%.deveval.zip,${EVALZIP_FILES})
 
 
 ## backup files before removing benchmarks
@@ -46,9 +55,30 @@ ifneq (${REMOVE_PATTERN},)
 endif
 
 
+## remove all evaluation files that belong to development sets
+## and put them into a separate zip file
+
+.PHONY: remove-devevalfiles
+remove-devevalfiles: ${EVALZIP_DEV}
+
+${EVALZIP_DEV}: %.deveval.zip: %.eval.zip
+	mkdir -p $@.d $<.d
+	cd $<.d && unzip ../${notdir $<}
+	for d in ${DEVSETS}; do \
+	  find $<.d -name "$$d.*" -exec mv {} $@.d/ \; ;\
+	done
+	if [ `ls $<.d | wc -l` -gt 0 ]; then \
+	  mv $< $<.backup; \
+	  cd ${PWD}/$<.d && find . -name '*.*' | xargs zip ../${notdir $<}; \
+	  cd ${PWD}/$@.d && find . -name '*.*' | xargs zip ../${notdir $@}; \
+	fi
+	rm -fr $<.d $@.d
+
 
 ## remove backup files
 
 .PHONY: cleanup
 cleanup:
 	find ../scores -name '*.remove' -delete
+	find ../models -name '*.remove' -delete
+	find ../models -name '*.backup' -delete

@@ -10,11 +10,12 @@
 PWD      := ${shell pwd}
 REPOHOME := ${PWD}/../
 
-ALL_SOURCES      := $(filter-out lib,$(notdir ${shell find . -maxdepth 1 -mindepth 2 -type d}))
 
-SOURCE     ?= huggingface/facebook
-MODEL_HOME ?= ${SOURCE}
-MODEL      ?= nllb-200-distilled-600M
+ALL_SOURCES := $(filter-out lib,$(notdir ${shell find . -maxdepth 1 -mindepth 2 -type d}))
+
+SOURCE      ?= huggingface/facebook
+MODEL_HOME  ?= ${SOURCE}
+MODEL       ?= nllb-200-distilled-600M
 
 include lib/config.mk
 
@@ -50,10 +51,6 @@ register-all:
 	for s in ${ALL_SOURCES}; do \
 	  ${MAKE} SOURCE=$$s ALL_MODELS=1 register; \
 	done
-
-.PHONY: register-contributed
-register-contributed:
-	${MAKE} SOURCE=unverified ALL_MODELS=1 register
 
 
 ## register scores from all models in current source in leaderboards

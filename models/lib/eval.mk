@@ -83,7 +83,9 @@ eval-model-files: ${MODEL_EVAL_SCORES}
 
 .PHONY: update-eval-files
 update-eval-files:
-	mv -f ${MODEL_SCORES} ${MODEL_SCORES}.${TODAY}
+	if [ -e ${MODEL_SCORES} ]; then \
+	  mv -f ${MODEL_SCORES} ${MODEL_SCORES}.${TODAY}; \
+	fi
 	${MAKE} eval-model-files
 
 .PHONY: eval

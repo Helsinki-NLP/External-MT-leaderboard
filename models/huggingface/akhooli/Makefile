@@ -4,7 +4,7 @@
 #
 
 PWD      := ${shell pwd}
-REPOHOME := ${PWD}/../../
+REPOHOME := ${PWD}/../../../
 
 MODEL_HOME       := ${PWD}/..
 MODELS           := akhooli/mbart-large-cc25-ar-en

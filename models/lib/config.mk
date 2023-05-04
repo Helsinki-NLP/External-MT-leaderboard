@@ -46,9 +46,10 @@ TESTSET_INDEX  := ${REPOHOME}OPUS-MT-testsets/index.txt
 ## model directory (for test results)
 ## model score file and zipfile with evaluation results
 
-MODEL_HOME      ?= ${PWD}
+MODEL_HOME     ?= ${PWD}
 MODEL_DIR       = ${MODEL_HOME}/${MODEL}
 MODEL_EVALZIP   = ${MODEL_DIR}.eval.zip
+MODEL_PATH     ?= $(shell echo ${MODEL_DIR}  | sed 's|^.*/models/||')
 
 LEADERBOARD_DIR = ${REPOHOME}scores
 

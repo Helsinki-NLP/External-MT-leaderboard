@@ -4,7 +4,7 @@
 #
 
 PWD      := ${shell pwd}
-REPOHOME := ${PWD}/../../
+REPOHOME := ${PWD}/../../../
 
 MODEL_HOME       := ${PWD}/..
 MODELS           := Narrativa/mbart-large-50-finetuned-opus-en-pt-translation
@@ -53,7 +53,7 @@ ${WORK_DIR}/%.${LANGPAIR}.output: ${TESTSET_DIR}/%.${SRC} ${TESTSET_DIR}/%.${TRG
 	mkdir -p ${MODEL_DIR}
 	find ${MODEL_DIR} -name '*.${LANGPAIR}.compare' -exec cat {} \; |\
 	../../tools/find-missing-translations.pl -i $< -o $@.found > $@.missing
-	module load pytorch && python3 ../huggingface/translate.py \
+	module load pytorch && python3 ../translate.py \
 		-m ${MODEL} -b ${BATCH_SIZE} -l ${MAX_LENGTH} \
 		-i ${SRCID} -o ${TRGID} < $@.missing > $@.translated
 	../../tools/merge-with-missing-translations.pl \

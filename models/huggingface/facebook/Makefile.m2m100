@@ -4,7 +4,7 @@
 #
 
 PWD      := ${shell pwd}
-REPOHOME := ${PWD}/../../
+REPOHOME := ${PWD}/../../../
 MAKE     := make -f Makefile.m2m100
 
 
@@ -44,8 +44,8 @@ MODEL_EVAL_URL  := ${MODEL_STORAGE}/facebook/${MODEL}.eval.zip
 all: eval-models
 
 
-include ../lib/config.mk
-include ../lib/eval.mk
+include ../../lib/config.mk
+include ../../lib/eval.mk
 
 
 ## MODEL_URL: location of the public model (to be stored in the score files)

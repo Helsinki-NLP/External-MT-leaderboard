@@ -4,7 +4,7 @@
 #
 
 PWD      := ${shell pwd}
-REPOHOME := ${PWD}/../../
+REPOHOME := ${PWD}/../../../
 MAKE     := make -f Makefile.nllb
 
 
@@ -87,12 +87,12 @@ eval-flores101:
 
 
 
-include ../lib/config.mk
-include ../lib/eval.mk
+include ../../lib/config.mk
+include ../../lib/eval.mk
 
 
 ## MODEL_URL: location of the public model (to be stored in the score files)
-MODEL_URL       := https://huggingface.co/facebook/${MODEL}
+MODEL_URL  := https://huggingface.co/facebook/${MODEL}
 
 
 ##------------------------------------------------------

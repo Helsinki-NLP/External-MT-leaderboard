@@ -4,7 +4,9 @@
 #
 
 PWD      := ${shell pwd}
-REPOHOME := ${PWD}/../../
+REPOHOME := ${PWD}/../../../
+
+
 
 
 
@@ -13,7 +15,7 @@ all:
 	${MAKE} nllb-jobs
 	${MAKE} m2m100-jobs
 
-include ../lib/config.mk
+include ../../lib/config.mk
 
 
 

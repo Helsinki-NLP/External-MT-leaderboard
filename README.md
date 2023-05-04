@@ -6,7 +6,6 @@ A repository of scores and leaderboard for MT models and benchmarks.
 * [model scores for various benchmarks](models)
 * [leaderboards per benchmark](scores)
 * [recipes for automatic model evaluation](models)
-* [merged benchmark translations for better comparison](compare)
 * [web-based dashboard](https://github.com/Helsinki-NLP/OPUS-MT-dashboard)
 
 

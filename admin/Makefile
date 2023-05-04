@@ -36,6 +36,9 @@ EVALZIP_DEV   := $(patsubst %.eval.zip,%.deveval.zip,${EVALZIP_FILES})
 TOPSCORE_FILES_REMOVE   := $(patsubst %.txt,%.remove,${TOPSCORE_FILES})
 MODELSCORE_FILES_REMOVE := $(patsubst %.txt,%.remove,${MODELSCORE_FILES})
 
+.PHONY: remove-devsets
+remove-devsets: remove-benchmark remove-devevalfiles
+	${MAKE} cleanup
 
 ## remove one or more benchmarks from the leaderboards and score files
 ## TODO: need to also do something with the evaluation files in the zip archives
@@ -49,9 +52,9 @@ remove-benchmark: ${TOPSCORE_FILES_REMOVE} ${MODELSCORE_FILES_REMOVE}
 
 %.remove: %.txt
 ifneq (${REMOVE_PATTERN},)
-	mv -f $< $@
-	egrep -v '(${REMOVE_PATTERN})	' < $@ > $<
-	touch $@
+	@mv -f $< $@
+	@egrep -v '(${REMOVE_PATTERN})	' < $@ > $<
+	@touch $@
 endif
 
 

@@ -76,7 +76,7 @@ endif
 	echo 'seff $$SLURM_JOBID'               >> ${TMPWORKDIR}/$@
 	sbatch ${SBATCH_ARGS} ${TMPWORKDIR}/$@
 	mkdir -p ${WORKDIR}
-	mv ${TMPWORKDIR}/$@ ${WORKDIR}/$@
+	-mv ${TMPWORKDIR}/$@ ${WORKDIR}/$@
 
 #	echo "echo ''"                          >> ${TMPWORKDIR}/$@
 #	echo "Makefile variables:"              >> ${TMPWORKDIR}/$@
@@ -131,6 +131,6 @@ endif
 	echo 'seff $$SLURM_JOBID'         >> ${TMPWORKDIR}/$@
 	sbatch ${SBATCH_ARGS} ${TMPWORKDIR}/$@
 	mkdir -p ${WORKDIR}
-	mv ${TMPWORKDIR}/$@ ${WORKDIR}/$@
+	-mv ${TMPWORKDIR}/$@ ${WORKDIR}/$@
 
 

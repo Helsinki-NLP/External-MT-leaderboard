@@ -30,15 +30,6 @@ MODEL_LANGPAIRS := ${shell for s in ${SRC_LANGS}; do for t in ${TRG_LANGS}; do e
 
 
 
-## MODEL_EVAL_URL: location of the storage space for the evaluation output files
-## 	TODO: make sure that this is correct and also saved somewhere!
-
-MODEL_STORAGE   := https://object.pouta.csc.fi/External-MT-models
-MODEL_EVAL_URL  := ${MODEL_STORAGE}/facebook/${MODEL}.eval.zip
-
-
-
-
 ## function to lookup the script (necessary extension to lang-IDs in the NLLB model
 ## + some fixes that OPUS-MT-testsets changed when importing flores200
 
@@ -89,6 +80,7 @@ eval-flores101:
 
 include ../../lib/config.mk
 include ../../lib/eval.mk
+
 
 
 ## MODEL_URL: location of the public model (to be stored in the score files)

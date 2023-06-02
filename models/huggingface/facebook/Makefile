@@ -25,17 +25,20 @@ NLLB_MODELS := nllb-200-distilled-600M nllb-200-distilled-1.3B nllb-200-1.3B nll
 
 nllb-jobs:
 	for m in ${NLLB_MODELS}; do \
-	  ${MAKE} -f Makefile.nllb MODELS=$$m METRICS="bleu spbleu chrf chrf++" eval-models.submit; \
+	  ${MAKE} -f Makefile.nllb MODELS=$$m METRICS="bleu spbleu chrf chrf++" \
+				EVAL_LANGPAIR_THREADS=1 eval-models.submit; \
 	done
 
 nllb-flores101-jobs:
 	for m in ${NLLB_MODELS}; do \
-	  ${MAKE} -f Makefile.nllb MODELS=$$m METRICS="bleu spbleu chrf chrf++" eval-flores101.submit; \
+	  ${MAKE} -f Makefile.nllb MODELS=$$m METRICS="bleu spbleu chrf chrf++" \
+				EVAL_LANGPAIR_THREADS=1 eval-flores101.submit; \
 	done
 
 nllb-pivot-jobs:
 	for m in ${NLLB_MODELS}; do \
-	  ${MAKE} -f Makefile.nllb MODELS=$$m eval-pivot.submit; \
+	  ${MAKE} -f Makefile.nllb MODELS=$$m \
+		EVAL_LANGPAIR_THREADS=1 eval-pivot.submit; \
 	done
 
 

@@ -61,6 +61,10 @@ LEADERBOARD_GITURL = https://raw.githubusercontent.com/Helsinki-NLP/External-MT-
 MODELSCORE_STORAGE = ${LEADERBOARD_GITURL}/models/$(notdir ${MODEL_HOME})
 
 
+MODEL_STORAGE  := https://object.pouta.csc.fi/External-MT-leaderboard
+MODEL_EVAL_URL := ${MODEL_STORAGE}/models/${MODEL_PATH}.eval.zip
+
+
 ## score files with all evaluation results
 ##   - combination of BLEU and chrF (MODEL_SCORES)
 ##   - for a specific metric (MODEL_METRIC_SCORES)

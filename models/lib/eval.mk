@@ -1,12 +1,20 @@
 # -*-makefile-*-
 
 
+ifdef EVAL_LANGPAIR_THREADS
+  MAKE_EVAL_LANGPAIR_PARAMS += -j ${EVAL_LANGPAIR_THREADS}
+endif
+
+ifdef EVAL_TESTSETS_THREADS
+  MAKE_EVAL_TESTSETS_PARAMS += -j ${EVAL_TESTSETS_THREADS}
+endif
+
 
 .PHONY: eval-pivot
 eval-pivot:
 	${MAKE} fetch
-	${MAKE} SRC_LANGS=${PIVOTLANG} eval-langpairs
-	${MAKE} TRG_LANGS=${PIVOTLANG} eval-langpairs
+	${MAKE} SRC_LANGS=${PIVOTLANG} ${MAKE_EVAL_LANGPAIR_PARAMS} eval-langpairs
+	${MAKE} TRG_LANGS=${PIVOTLANG} ${MAKE_EVAL_LANGPAIR_PARAMS} eval-langpairs
 	${MAKE} SRC_LANGS=${PIVOTLANG} cleanup
 	${MAKE} SRC_LANGS=${PIVOTLANG} eval-model-files
 	${MAKE} SRC_LANGS=${PIVOTLANG} pack-model-scores
@@ -72,7 +80,7 @@ eval-model: ${MODEL_EVAL_SCORES}
 	@if [ $(words $(wildcard $^)) -ne $(words $^) ]; then \
 	  echo "score files missing ... fetch model and scores!"; \
 	  ${MAKE} fetch; \
-	  ${MAKE} eval-langpairs; \
+	  ${MAKE} ${MAKE_EVAL_LANGPAIR_PARAMS} eval-langpairs; \
 	  ${MAKE} cleanup; \
 	  ${MAKE} ${MODEL_EVAL_SCORES}; \
 	fi
@@ -100,7 +108,7 @@ eval-langpairs: ${EVAL_LANGPAIR_TARGET}
 
 .PHONY: ${EVAL_LANGPAIR_TARGET}
 ${EVAL_LANGPAIR_TARGET}:
-	${MAKE} LANGPAIR=$(@:-eval=) eval-testsets
+	${MAKE} LANGPAIR=$(@:-eval=) ${MAKE_EVAL_TESTSETS_PARAMS} eval-testsets
 
 
 TRANSLATED_BENCHMARKS = $(patsubst %,${MODEL_DIR}/%.${LANGPAIR}.compare,${TESTSETS})
@@ -265,7 +273,7 @@ ifndef SKIP_OLD_EVALUATION
 endif
 ifndef SKIP_NEW_EVALUATION
 	${MAKE} fetch
-	${MAKE} eval-langpairs
+	${MAKE} ${MAKE_EVAL_LANGPAIR_PARAMS} eval-langpairs
 	${MAKE} cleanup
 endif
 	@echo "... create ${MODEL}/$(notdir $@)"

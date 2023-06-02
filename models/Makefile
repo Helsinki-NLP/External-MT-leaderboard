@@ -35,7 +35,7 @@ endif
 ## to get a list of all *.eval.zip files (a very long list)
 
 ifdef ALL_MODELSOURCES
-  MODEL_EVALZIPS := $(patsubst %.scores.txt,%.eval.zip,${shell find . -name '*.scores.txt' -printf "%P\n"})
+  MODEL_EVALZIPS := $(patsubst ./%.scores.txt,%.eval.zip,${shell find . -name '*.scores.txt'})
 endif
 
 MODEL_EVALZIPS  ?= $(patsubst %,%.eval.zip,$(sort $(basename ${SCOREFILES:.txt=})))

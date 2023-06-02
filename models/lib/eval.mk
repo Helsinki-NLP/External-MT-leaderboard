@@ -384,7 +384,7 @@ pack-model-scores:
 	@if [ -d ${MODEL_DIR} ]; then \
 	  echo "... pack model scores from ${MODEL}"; \
 	  cd ${MODEL_DIR} && find . -name '*.*' | xargs zip ${MODEL_EVALZIP}; \
-	  find ${MODEL_DIR} -name '*.log' -printf '%P\n' > ${MODEL_DIR}.logfiles; \
+	  find ${MODEL_DIR} -name '*.log' | sed 's|^${MODEL_DIR}/||' > ${MODEL_DIR}.logfiles; \
 	  find ${MODEL_DIR} -name '*.*' -delete; \
 	  if [ -d ${MODEL_DIR} ]; then \
 	    rmdir ${MODEL_DIR}; \

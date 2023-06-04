@@ -41,6 +41,11 @@ nllb-pivot-jobs:
 		EVAL_LANGPAIR_THREADS=1 eval-pivot.submit; \
 	done
 
+# create the score files for all nllb models
+nllb-scores:
+	for m in ${NLLB_MODELS}; do \
+	  ${MAKE} -f Makefile.nllb MODELS=$$m FLORES200_LANGS=eng update-eval-files; \
+	done
 
 
 ## evaluate M2M100 model (see Makefile.m2m100)

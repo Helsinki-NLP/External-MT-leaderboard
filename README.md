@@ -165,7 +165,7 @@ eng-rus	tico19-test	28.9
 
 The only file that differs from this general format is the `src-trg/model-release-name.scores.txt` that combines BLEU and chrF scores. In addition to the scores, this file also includes
 
-* the link to the actual model for downloading
+* the link to the external model
 * the size of the benchmark in terms of the number of sentences
 * the size of the benchmark in terms of the number of tokens
 

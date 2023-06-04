@@ -195,8 +195,10 @@ ${EVALZIP_DEV}: %.deveval.zip: %.eval.zip
 	done
 	if [ `ls $<.d | wc -l` -gt 0 ]; then \
 	  mv $< $<.backup; \
-	  cd ${PWD}/$<.d && find . -name '*.*' | xargs zip ../${notdir $<}; \
-	  cd ${PWD}/$@.d && find . -name '*.*' | xargs zip ../${notdir $@}; \
+	  cd $<.d && find . -name '*.*' | xargs zip ../${notdir $<}; \
+	fi
+	if [ `ls $@.d | wc -l` -gt 0 ]; then \
+	  cd $@.d && find . -name '*.*' | xargs zip ../${notdir $@}; \
 	fi
 	rm -fr $<.d $@.d
 

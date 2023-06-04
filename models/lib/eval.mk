@@ -1,20 +1,29 @@
 # -*-makefile-*-
 
 
-ifdef EVAL_LANGPAIR_THREADS
-  MAKE_EVAL_LANGPAIR_PARAMS += -j ${EVAL_LANGPAIR_THREADS}
-endif
-
-ifdef EVAL_TESTSETS_THREADS
-  MAKE_EVAL_TESTSETS_PARAMS += -j ${EVAL_TESTSETS_THREADS}
-endif
+.PHONY: print-model-info
+print-model-info:
+	@echo "${MODEL_URL}"
+	@echo "${MODEL_DIST}"
+	@echo "${MODEL}"
+	@echo "${LANGPAIRS}"
+	@echo "${TESTSET}"
+	@echo ""
+	@echo "available benchmarks:"
+	@echo "${AVAILABLE_BENCHMARKS}" | tr ' ' "\n"
+	@echo ""
+	@echo "tested benchmarks:"
+	@echo "${TESTED_BENCHMARKS}" | tr ' ' "\n"
+	@echo ""
+	@echo "missing benchmarks:"
+	@echo "${MISSING_BENCHMARKS}" | tr ' ' "\n"
 
 
 .PHONY: eval-pivot
 eval-pivot:
 	${MAKE} fetch
-	${MAKE} SRC_LANGS=${PIVOTLANG} ${MAKE_EVAL_LANGPAIR_PARAMS} eval-langpairs
-	${MAKE} TRG_LANGS=${PIVOTLANG} ${MAKE_EVAL_LANGPAIR_PARAMS} eval-langpairs
+	${MAKE} SRC_LANGS=${PIVOTLANG} eval-langpairs
+	${MAKE} TRG_LANGS=${PIVOTLANG} eval-langpairs
 	${MAKE} SRC_LANGS=${PIVOTLANG} cleanup
 	${MAKE} SRC_LANGS=${PIVOTLANG} eval-model-files
 	${MAKE} SRC_LANGS=${PIVOTLANG} pack-model-scores
@@ -58,6 +67,7 @@ endif
 
 .PHONY: ${EVAL_MODEL_TARGETS}
 ${EVAL_MODEL_TARGETS}:
+	-${MAKE} MODEL=$(@:-evalmodel=) get-available-benchmarks
 	-${MAKE} MODEL=$(@:-evalmodel=) eval-model
 
 
@@ -75,12 +85,12 @@ eval-models-reverse-order: ${EVAL_MODEL_REVERSE_TARGETS}
 ## register the scores and update the leaderboard
 ##-------------------------------------------------
 
-.PHONY: eval-model
-eval-model: ${MODEL_EVAL_SCORES}
+.PHONY: eval-model-old
+eval-model-old: ${MODEL_EVAL_SCORES}
 	@if [ $(words $(wildcard $^)) -ne $(words $^) ]; then \
 	  echo "score files missing ... fetch model and scores!"; \
 	  ${MAKE} fetch; \
-	  ${MAKE} ${MAKE_EVAL_LANGPAIR_PARAMS} eval-langpairs; \
+	  ${MAKE} eval-langpairs; \
 	  ${MAKE} cleanup; \
 	  ${MAKE} ${MODEL_EVAL_SCORES}; \
 	fi
@@ -96,8 +106,55 @@ update-eval-files:
 	fi
 	${MAKE} eval-model-files
 
+
+## new way of evaluating missing benchmarks
+## TODO: this would not add missing metrics
+
+.PHONY: eval-model
+eval-model: ${MODEL_TESTSETS}
+	@echo ".... evaluate ${MODEL}"
+ifneq (${MISSING_BENCHMARKS},)
+	${MAKE} fetch
+	${MAKE} eval-missing-benchmarks
+	${MAKE} cleanup
+	${MAKE} SKIP_NEW_EVALUATION=1 ${MODEL_EVAL_SCORES}; \
+	${MAKE} pack-model-scores
+else
+	@echo ".... nothing is missing"
+endif
+
+.PHONY: eval-missing-benchmarks
+eval-missing-benchmarks: ${MISSING_BENCHMARKS}
+
+${MISSING_BENCHMARKS}:
+	${MAKE} LANGPAIR=$(firstword $(subst /, ,$@)) \
+		TESTSET=$(lastword $(subst /, ,$@)) \
+	eval
+
+## get all available benchmarks for the current model
+
+.PHONY: get-available-benchmarks
+get-available-benchmarks: ${MODEL_TESTSETS}
+
+${MODEL_TESTSETS}: ${LANGPAIR_TO_TESTSETS}
+	rm -f $@
+	@l=$(foreach lp,${LANGPAIRS},\
+		$(shell grep '^${lp}	' ${LANGPAIR_TO_TESTSETS} | \
+			cut -f2 | tr ' ' "\n" | \
+			sed 's|^|${lp}/|' >> $@))
+	@echo "available testsets stored in $@"
+
+
+
+
+
+
+
+
+
+
 .PHONY: eval
-eval: 	${MODEL_DIR}/${TESTSET}.${LANGPAIR}.compare \
+eval:	${MODEL_DIR}/${TESTSET}.${LANGPAIR}.compare \
 	${MODEL_DIR}/${TESTSET}.${LANGPAIR}.eval
 
 
@@ -108,44 +165,79 @@ eval-langpairs: ${EVAL_LANGPAIR_TARGET}
 
 .PHONY: ${EVAL_LANGPAIR_TARGET}
 ${EVAL_LANGPAIR_TARGET}:
-	${MAKE} LANGPAIR=$(@:-eval=) ${MAKE_EVAL_TESTSETS_PARAMS} eval-testsets
+	${MAKE} LANGPAIR=$(@:-eval=) eval-testsets
+
+
+EVAL_BENCHMARK_TARGETS = $(patsubst %,%-eval,${TESTSETS})
+
+.PHONY: eval-testsets
+eval-testsets: ${TRANSLATED_BENCHMARK_TARGETS}
+
+.PHONY: ${EVAL_BENCHMARK_TARGETS}
+${EVAL_BENCHMARK_TARGETS}:
+	${MAKE} TESTSET=$(@:-compare=) eval
+
+
 
 
 TRANSLATED_BENCHMARKS = $(patsubst %,${MODEL_DIR}/%.${LANGPAIR}.compare,${TESTSETS})
 EVALUATED_BENCHMARKS  = $(patsubst %,${MODEL_DIR}/%.${LANGPAIR}.eval,${TESTSETS})
-BENCHMARK_SCORE_FILES = $(foreach m,${METRICS},$(patsubst %.eval,%.${m},${EVALUATED_BENCHMARKS}))
+# BENCHMARK_SCORE_FILES = $(foreach m,${METRICS},$(patsubst %.eval,%.${m},${EVALUATED_BENCHMARKS}))
+BENCHMARK_SCORE_FILES = $(foreach m,${METRICS},${MODEL_DIR}/${TESTSET}.${LANGPAIR}.${m})
 
 ## don't delete those files when used in implicit rules
 .NOTINTERMEDIATE: ${TRANSLATED_BENCHMARKS} ${EVALUATED_BENCHMARKS} ${BENCHMARK_SCORE_FILES}
 
 
-.PHONY: eval-testsets
-eval-testsets: ${TRANSLATED_BENCHMARKS} ${EVALUATED_BENCHMARKS}
+# .PHONY: eval-testsets
+# eval-testsets: ${TRANSLATED_BENCHMARKS} ${EVALUATED_BENCHMARKS}
 
 
 
 .INTERMEDIATE: ${WORK_DIR}/%.${LANGPAIR}.output
 
 
+## compare source. reference and hypothesis
+## NOTE: this only shows one reference translation
+
+${MODEL_DIR}/${TESTSET}.${LANGPAIR}.compare: 
+	${MAKE} ${WORK_DIR}/${TESTSET}.${LANGPAIR}.output
+	@mkdir -p ${dir $@}
+	@if [ -s ${WORK_DIR}/${TESTSET}.${LANGPAIR}.output ]; then \
+	  paste -d "\n" ${TESTSET_SRC} ${TESTSET_TRG} \
+			${WORK_DIR}/${TESTSET}.${LANGPAIR}.output | sed 'n;n;G;' > $@; \
+	fi
+
+
+# ${MODEL_DIR}/%.${LANGPAIR}.compare: ${TESTSET_SRC} ${TESTSET_TRG} ${WORK_DIR}/%.${LANGPAIR}.output
+# 	@mkdir -p ${dir $@}
+# 	@if [ -s $(word 3,$^) ]; then \
+# 	  paste -d "\n" $^ | sed 'n;n;G;' > $@; \
+# 	fi
+
+
+
+## OLD: expect testset files in TESTSET_DIR
+
+# ${MODEL_DIR}/%.${LANGPAIR}.compare:	${TESTSET_DIR}/%.${SRC} \
+# 					${TESTSET_DIR}/%.${TRG} \
+# 					${WORK_DIR}/%.${LANGPAIR}.output
+# 	@mkdir -p ${dir $@}
+# 	if [ -s $(word 3,$^) ]; then \
+# 	  paste -d "\n" $^ | sed 'n;n;G;' > $@; \
+# 	fi
+
+
 ## don't make the temporary output a pre-requisite
 ## (somehow it does not always work to skip creating it if the target already exists)
-#
-# ${MODEL_DIR}/%.${LANGPAIR}.compare:	${TESTSET_DIR}/%.${SRC} \
-#					${TESTSET_DIR}/%.${TRG} \
-#					${WORK_DIR}/%.${LANGPAIR}.output
+
+
+#${MODEL_DIR}/%.${LANGPAIR}.compare: ${TESTSET_DIR}/%.${SRC} ${TESTSET_DIR}/%.${TRG}
 #	@mkdir -p ${dir $@}
-#	if [ -s $(word 3,$^) ]; then \
-#	  paste -d "\n" $^ | sed 'n;n;G;' > $@; \
+#	@if [ -s $(patsubst ${MODEL_DIR}/%.${LANGPAIR}.compare,${WORK_DIR}/%.${LANGPAIR}.output,$@) ]; then \
+#	  paste -d "\n" $^ $(patsubst ${MODEL_DIR}/%.${LANGPAIR}.compare,${WORK_DIR}/%.${LANGPAIR}.output,$@) |\
+#	  sed 'n;n;G;' > $@; \
 #	fi
-
-
-${MODEL_DIR}/%.${LANGPAIR}.compare: ${TESTSET_DIR}/%.${SRC} ${TESTSET_DIR}/%.${TRG}
-	@mkdir -p ${dir $@}
-	@${MAKE} $(patsubst ${MODEL_DIR}/%.${LANGPAIR}.compare,${WORK_DIR}/%.${LANGPAIR}.output,$@)
-	@if [ -s $(patsubst ${MODEL_DIR}/%.${LANGPAIR}.compare,${WORK_DIR}/%.${LANGPAIR}.output,$@) ]; then \
-	  paste -d "\n" $^ $(patsubst ${MODEL_DIR}/%.${LANGPAIR}.compare,${WORK_DIR}/%.${LANGPAIR}.output,$@) |\
-	  sed 'n;n;G;' > $@; \
-	fi
 
 
 ## concatenate all scores into one file
@@ -180,57 +272,107 @@ ifneq ($(filter kor,${TRG}),)
   SACREBLEU_PARAMS = --tokenize ko-mecab
 endif
 
+
 ${MODEL_DIR}/%.${LANGPAIR}.spbleu: ${MODEL_DIR}/%.${LANGPAIR}.compare
 	@echo "... create ${MODEL}/$(notdir $@)"
 	@mkdir -p ${dir $@}
-	@sed -n '1~4p' $< > $@.src
-	@sed -n '2~4p' $< > $@.ref
 	@sed -n '3~4p' $< > $@.hyp
-	@cat $@.hyp | \
-	sacrebleu -f text --metrics=bleu --tokenize flores200 $@.ref > $@
-	@rm -f $@.src $@.ref $@.hyp
+	@cat $@.hyp | sacrebleu -f text --metrics=bleu --tokenize flores200 ${TESTSET_REFS} > $@
+	@rm -f $@.hyp
 
 ${MODEL_DIR}/%.${LANGPAIR}.bleu: ${MODEL_DIR}/%.${LANGPAIR}.compare
 	@echo "... create ${MODEL}/$(notdir $@)"
 	@mkdir -p ${dir $@}
-	@sed -n '1~4p' $< > $@.src
-	@sed -n '2~4p' $< > $@.ref
 	@sed -n '3~4p' $< > $@.hyp
-	@cat $@.hyp | \
-	sacrebleu -f text ${SACREBLEU_PARAMS} $@.ref > $@
-	@rm -f $@.src $@.ref $@.hyp
+	@cat $@.hyp | sacrebleu -f text --metrics=bleu ${TESTSET_REFS} > $@
+	@rm -f $@.hyp
 
 ${MODEL_DIR}/%.${LANGPAIR}.chrf: ${MODEL_DIR}/%.${LANGPAIR}.compare
 	@echo "... create ${MODEL}/$(notdir $@)"
 	@mkdir -p ${dir $@}
-	@sed -n '1~4p' $< > $@.src
-	@sed -n '2~4p' $< > $@.ref
 	@sed -n '3~4p' $< > $@.hyp
 	@cat $@.hyp | \
-	sacrebleu -f text ${SACREBLEU_PARAMS} --metrics=chrf --width=3 $@.ref |\
+	sacrebleu -f text ${SACREBLEU_PARAMS} --metrics=chrf --width=3 ${TESTSET_REFS} |\
 	perl -pe 'unless (/version\:1\./){@a=split(/\s+/);$$a[-1]/=100;$$_=join(" ",@a)."\n";}' > $@
-	@rm -f $@.src $@.ref $@.hyp
+	@rm -f $@.hyp
 
 ${MODEL_DIR}/%.${LANGPAIR}.chrf++: ${MODEL_DIR}/%.${LANGPAIR}.compare
 	@echo "... create ${MODEL}/$(notdir $@)"
 	@mkdir -p ${dir $@}
-	@sed -n '1~4p' $< > $@.src
-	@sed -n '2~4p' $< > $@.ref
 	@sed -n '3~4p' $< > $@.hyp
 	@cat $@.hyp | \
-	sacrebleu -f text ${SACREBLEU_PARAMS} --metrics=chrf --width=3 --chrf-word-order 2 $@.ref |\
+	sacrebleu -f text ${SACREBLEU_PARAMS} --metrics=chrf --width=3 --chrf-word-order 2 ${TESTSET_REFS} |\
 	perl -pe 'unless (/version\:1\./){@a=split(/\s+/);$$a[-1]/=100;$$_=join(" ",@a)."\n";}' > $@
-	@rm -f $@.src $@.ref $@.hyp
+	@rm -f $@.hyp
 
 ${MODEL_DIR}/%.${LANGPAIR}.ter: ${MODEL_DIR}/%.${LANGPAIR}.compare
 	@echo "... create ${MODEL}/$(notdir $@)"
 	@mkdir -p ${dir $@}
-	@sed -n '1~4p' $< > $@.src
-	@sed -n '2~4p' $< > $@.ref
 	@sed -n '3~4p' $< > $@.hyp
 	@cat $@.hyp | \
-	sacrebleu -f text ${SACREBLEU_PARAMS} --metrics=ter $@.ref > $@
-	@rm -f $@.src $@.ref $@.hyp
+	sacrebleu -f text ${SACREBLEU_PARAMS} --metrics=ter ${TESTSET_REFS} > $@
+	@rm -f $@.hyp
+
+
+
+
+
+# ${MODEL_DIR}/%.${LANGPAIR}.spbleu: ${MODEL_DIR}/%.${LANGPAIR}.compare
+# 	@echo "... create ${MODEL}/$(notdir $@)"
+# 	@mkdir -p ${dir $@}
+# 	@sed -n '1~4p' $< > $@.src
+# 	@sed -n '2~4p' $< > $@.ref
+# 	@sed -n '3~4p' $< > $@.hyp
+# 	@cat $@.hyp | \
+# 	sacrebleu -f text --metrics=bleu --tokenize flores200 $@.ref > $@
+# 	@rm -f $@.src $@.ref $@.hyp
+
+# ${MODEL_DIR}/%.${LANGPAIR}.bleu: ${MODEL_DIR}/%.${LANGPAIR}.compare
+# 	@echo "... create ${MODEL}/$(notdir $@)"
+# 	@mkdir -p ${dir $@}
+# 	@sed -n '1~4p' $< > $@.src
+# 	@sed -n '2~4p' $< > $@.ref
+# 	@sed -n '3~4p' $< > $@.hyp
+# 	@cat $@.hyp | \
+# 	sacrebleu -f text ${SACREBLEU_PARAMS} $@.ref > $@
+# 	@rm -f $@.src $@.ref $@.hyp
+
+# ${MODEL_DIR}/%.${LANGPAIR}.chrf: ${MODEL_DIR}/%.${LANGPAIR}.compare
+# 	@echo "... create ${MODEL}/$(notdir $@)"
+# 	@mkdir -p ${dir $@}
+# 	@sed -n '1~4p' $< > $@.src
+# 	@sed -n '2~4p' $< > $@.ref
+# 	@sed -n '3~4p' $< > $@.hyp
+# 	@cat $@.hyp | \
+# 	sacrebleu -f text ${SACREBLEU_PARAMS} --metrics=chrf --width=3 $@.ref |\
+# 	perl -pe 'unless (/version\:1\./){@a=split(/\s+/);$$a[-1]/=100;$$_=join(" ",@a)."\n";}' > $@
+# 	@rm -f $@.src $@.ref $@.hyp
+
+# ${MODEL_DIR}/%.${LANGPAIR}.chrf++: ${MODEL_DIR}/%.${LANGPAIR}.compare
+# 	@echo "... create ${MODEL}/$(notdir $@)"
+# 	@mkdir -p ${dir $@}
+# 	@sed -n '1~4p' $< > $@.src
+# 	@sed -n '2~4p' $< > $@.ref
+# 	@sed -n '3~4p' $< > $@.hyp
+# 	@cat $@.hyp | \
+# 	sacrebleu -f text ${SACREBLEU_PARAMS} --metrics=chrf --width=3 --chrf-word-order 2 $@.ref |\
+# 	perl -pe 'unless (/version\:1\./){@a=split(/\s+/);$$a[-1]/=100;$$_=join(" ",@a)."\n";}' > $@
+# 	@rm -f $@.src $@.ref $@.hyp
+
+# ${MODEL_DIR}/%.${LANGPAIR}.ter: ${MODEL_DIR}/%.${LANGPAIR}.compare
+# 	@echo "... create ${MODEL}/$(notdir $@)"
+# 	@mkdir -p ${dir $@}
+# 	@sed -n '1~4p' $< > $@.src
+# 	@sed -n '2~4p' $< > $@.ref
+# 	@sed -n '3~4p' $< > $@.hyp
+# 	@cat $@.hyp | \
+# 	sacrebleu -f text ${SACREBLEU_PARAMS} --metrics=ter $@.ref > $@
+# 	@rm -f $@.src $@.ref $@.hyp
+
+
+
+## COMET scores like to have GPUs but work without as well
+## NOTE: this only compares with one reference translation!
 
 ifneq (${GPU_AVAILABLE},1)
   COMET_PARAM += --gpus 0
@@ -264,7 +406,7 @@ ${MODEL_DIR}/%.${LANGPAIR}.comet: ${MODEL_DIR}/%.${LANGPAIR}.compare
 #	  grep -H chrF ${MODEL_DIR}/*.chrf | sed 's/.chrf//' | sort          > $@.chrf;
 
 
-${MODEL_SCORES}: ${TESTSET_INDEX}
+${MODEL_SCORES}: ${TESTSET_INDEX} ${TESTSET_FILES}
 ifndef SKIP_OLD_EVALUATION
 	-if [ ! -e $@ ]; then \
 	  mkdir -p $(dir $@); \
@@ -273,7 +415,7 @@ ifndef SKIP_OLD_EVALUATION
 endif
 ifndef SKIP_NEW_EVALUATION
 	${MAKE} fetch
-	${MAKE} ${MAKE_EVAL_LANGPAIR_PARAMS} eval-langpairs
+	${MAKE} eval-langpairs
 	${MAKE} cleanup
 endif
 	@echo "... create ${MODEL}/$(notdir $@)"
@@ -398,6 +540,11 @@ pack-model-scores:
 	    rmdir ${MODEL_DIR}; \
 	  fi \
 	fi
+
+## %P is not implemented in all versions of find (e.g. Mac OS)
+##
+#	  find ${MODEL_DIR} -name '*.log' -printf '%P\n' > ${MODEL_DIR}.logfiles; \
+
 
 MODEL_PACK_EVAL := ${patsubst %,%.pack,${MODELS}}
 

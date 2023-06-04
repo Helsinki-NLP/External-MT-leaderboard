@@ -64,7 +64,7 @@ translate: ${WORK_DIR}/${TESTSET}.${LANGPAIR}.output
 SRC2 = $(shell iso639 -2 -k ${SRC})
 TRG2 = $(shell iso639 -2 -k ${TRG})
 
-${WORK_DIR}/%.${LANGPAIR}.output: ${TESTSET_DIR}/%.${SRC} ${TESTSET_DIR}/%.${TRG}
+${WORK_DIR}/%.${LANGPAIR}.output: ${TESTSET_SRC} ${TESTSET_TRG}
 	@echo "........ create $(patsubst ${WORK_DIR}/%,%,$@)"
 	@mkdir -p $(dir $@)
 	@mkdir -p ${MODEL_DIR}

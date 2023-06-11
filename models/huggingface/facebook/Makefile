@@ -29,6 +29,7 @@ nllb-jobs:
 				EVAL_LANGPAIR_THREADS=1 eval-models.submit; \
 	done
 
+
 nllb-flores101-jobs:
 	for m in ${NLLB_MODELS}; do \
 	  ${MAKE} -f Makefile.nllb MODELS=$$m METRICS="bleu spbleu chrf chrf++" \
@@ -45,6 +46,11 @@ nllb-pivot-jobs:
 nllb-scores:
 	for m in ${NLLB_MODELS}; do \
 	  ${MAKE} -f Makefile.nllb MODELS=$$m FLORES200_LANGS=eng update-eval-files; \
+	done
+
+nllb-pack:
+	for m in ${NLLB_MODELS}; do \
+	  ${MAKE} -f Makefile.nllb MODELS=$$m FLORES200_LANGS=eng pack-model-scores; \
 	done
 
 

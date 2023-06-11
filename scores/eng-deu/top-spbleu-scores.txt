@@ -1,5 +1,6 @@
 flores101-devtest	47.7	huggingface/facebook/wmt19-en-de
 flores200-devtest	47.7	huggingface/facebook/wmt19-en-de
+generaltest2022	49.4	nllb-200-distilled-1.3B
 multi30k_task2_test_2016	5.8	huggingface/facebook/wmt19-en-de
 multi30k_test_2016_flickr	47.2	huggingface/facebook/wmt19-en-de
 multi30k_test_2017_flickr	48.2	huggingface/facebook/wmt19-en-de
@@ -7,6 +8,7 @@ multi30k_test_2017_mscoco	42.2	huggingface/facebook/wmt19-en-de
 multi30k_test_2018_flickr	44.8	huggingface/facebook/wmt19-en-de
 news2008	31.3	huggingface/facebook/wmt19-en-de
 newssyscomb2009	32.2	huggingface/facebook/wmt19-en-de
+newstest2008	28.2	nllb-200-distilled-1.3B
 newstest2009	30.9	huggingface/facebook/wmt19-en-de
 newstest2010	34.3	huggingface/facebook/wmt19-en-de
 newstest2011	31.5	huggingface/facebook/wmt19-en-de
@@ -19,6 +21,8 @@ newstest2017	46.0	huggingface/facebook/wmt19-en-de
 newstest2018	54.6	huggingface/facebook/wmt19-en-de
 newstest2019	49.2	huggingface/gsarti/opus-mt-tc-big-en-de
 newstest2020	42.9	huggingface/facebook/wmt19-en-de
+newstest2021	56.7	nllb-200-distilled-1.3B
+newstestALL2020	47.3	nllb-200-distilled-1.3B
 newstestB2020	43.0	huggingface/facebook/wmt19-en-de
 tatoeba-test-v2020-07-28	49.0	huggingface/facebook/nllb-200-distilled-1.3B
 tatoeba-test-v2021-03-30	48.0	huggingface/facebook/nllb-200-3.3B

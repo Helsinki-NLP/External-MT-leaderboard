@@ -127,7 +127,7 @@ endif
 eval-missing-benchmarks: ${MISSING_BENCHMARKS}
 
 ${MISSING_BENCHMARKS}:
-	${MAKE} LANGPAIR=$(firstword $(subst /, ,$@)) \
+	-${MAKE} LANGPAIR=$(firstword $(subst /, ,$@)) \
 		TESTSET=$(lastword $(subst /, ,$@)) \
 	eval
 

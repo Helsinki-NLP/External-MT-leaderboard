@@ -47,7 +47,7 @@ SRCID ?= en_XX
 TRGID ?= pt_XX
 
 
-${WORK_DIR}/%.${LANGPAIR}.output: ${TESTSET_DIR}/%.${SRC} ${TESTSET_DIR}/%.${TRG}
+${WORK_DIR}/%.${LANGPAIR}.output: ${TESTSET_SRC} ${TESTSET_TRG}
 	echo "create $@"
 	mkdir -p $(dir $@)
 	mkdir -p ${MODEL_DIR}

@@ -30,16 +30,6 @@ BATCH_SIZE ?= 16
 MODEL_LANGPAIRS := ${shell for s in ${SRC_LANGS}; do for t in ${TRG_LANGS}; do echo "$$s-$$t"; done done}
 
 
-
-## MODEL_EVAL_URL: location of the storage space for the evaluation output files
-## 	TODO: make sure that this is correct and also saved somewhere!
-
-MODEL_STORAGE   := https://object.pouta.csc.fi/External-MT-models
-MODEL_EVAL_URL  := ${MODEL_STORAGE}/facebook/${MODEL}.eval.zip
-
-
-
-
 .PHONY: all
 all: eval-models
 
@@ -74,7 +64,7 @@ translate: ${WORK_DIR}/${TESTSET}.${LANGPAIR}.output
 SRC2 = $(shell iso639 -2 -k ${SRC})
 TRG2 = $(shell iso639 -2 -k ${TRG})
 
-${WORK_DIR}/%.${LANGPAIR}.output: ${TESTSET_DIR}/%.${SRC} ${TESTSET_DIR}/%.${TRG}
+${WORK_DIR}/%.${LANGPAIR}.output: ${TESTSET_SRC} ${TESTSET_TRG}
 	@echo "........ create $(patsubst ${WORK_DIR}/%,%,$@)"
 	@mkdir -p $(dir $@)
 	@mkdir -p ${MODEL_DIR}

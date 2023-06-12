@@ -25,19 +25,33 @@ NLLB_MODELS := nllb-200-distilled-600M nllb-200-distilled-1.3B nllb-200-1.3B nll
 
 nllb-jobs:
 	for m in ${NLLB_MODELS}; do \
-	  ${MAKE} -f Makefile.nllb MODELS=$$m METRICS="bleu spbleu chrf chrf++" eval-models.submit; \
+	  ${MAKE} -f Makefile.nllb MODELS=$$m METRICS="bleu spbleu chrf chrf++" \
+				EVAL_LANGPAIR_THREADS=1 eval-models.submit; \
 	done
+
 
 nllb-flores101-jobs:
 	for m in ${NLLB_MODELS}; do \
-	  ${MAKE} -f Makefile.nllb MODELS=$$m METRICS="bleu spbleu chrf chrf++" eval-flores101.submit; \
+	  ${MAKE} -f Makefile.nllb MODELS=$$m METRICS="bleu spbleu chrf chrf++" \
+				EVAL_LANGPAIR_THREADS=1 eval-flores101.submit; \
 	done
 
 nllb-pivot-jobs:
 	for m in ${NLLB_MODELS}; do \
-	  ${MAKE} -f Makefile.nllb MODELS=$$m eval-pivot.submit; \
+	  ${MAKE} -f Makefile.nllb MODELS=$$m \
+		EVAL_LANGPAIR_THREADS=1 eval-pivot.submit; \
 	done
 
+# create the score files for all nllb models
+nllb-scores:
+	for m in ${NLLB_MODELS}; do \
+	  ${MAKE} -f Makefile.nllb MODELS=$$m FLORES200_LANGS=eng update-eval-files; \
+	done
+
+nllb-pack:
+	for m in ${NLLB_MODELS}; do \
+	  ${MAKE} -f Makefile.nllb MODELS=$$m FLORES200_LANGS=eng pack-model-scores; \
+	done
 
 
 ## evaluate M2M100 model (see Makefile.m2m100)

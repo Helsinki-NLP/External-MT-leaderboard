@@ -65,10 +65,12 @@ ifdef ALL_MODELS
 	find ${MODEL_HOME}/ -name '*.txt' | xargs git add
 	find ${MODEL_HOME}/ -name '*.registered' | xargs git add
 	-find ${MODEL_HOME}/ -name '*.logfiles' | xargs git add
+	-find ${MODEL_HOME}/ -name '*.tsv' | xargs git add
 else
 	git add ${MODEL_DIR}.*.txt
 	git add ${MODEL_DIR}.*.registered
 	-git add ${MODEL_DIR}.logfiles
+	-git add ${MODEL_DIR}.tsv
 endif
 
 ## register the scores for the current model

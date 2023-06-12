@@ -44,8 +44,6 @@ MODEL_LANGPAIRS  := ${TESTSET_SRCLANG}-${TESTSET_TRGLANG}
 ## MODEL_EVAL_URL: location of the storage space for the evaluation output files
 
 MODEL_URL       := huggingface/${MODEL}
-MODEL_STORAGE   := https://object.pouta.csc.fi/External-MT-models
-MODEL_EVAL_URL  := ${MODEL_STORAGE}/${MODEL}.eval.zip
 
 
 ## batch size and maximum length when decoding with transformer pipelines
@@ -91,7 +89,7 @@ fetch-model:
 .PHONY: translate
 translate: ${WORK_DIR}/${TESTSET}.${LANGPAIR}.output
 
-${WORK_DIR}/%.${LANGPAIR}.output: ${TESTSET_DIR}/%.${SRC} ${TESTSET_DIR}/%.${TRG}
+${WORK_DIR}/%.${LANGPAIR}.output: ${TESTSET_SRC} ${TESTSET_TRG}
 	echo "create $@"
 	mkdir -p $(dir $@)
 	mkdir -p ${MODEL_DIR}

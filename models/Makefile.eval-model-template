@@ -80,7 +80,7 @@ fetch-model:
 ## for all supported language pairs (specified by MODEL_LANGPAIRS)
 ## SRC and TRG will be taken from each supported language pair
 
-${WORK_DIR}/%.${LANGPAIR}.output: ${TESTSET_DIR}/%.${SRC} ${TESTSET_DIR}/%.${TRG}
+${WORK_DIR}/%.${LANGPAIR}.output: ${TESTSET_SRC} ${TESTSET_TRG}
 	@echo "translate $< from ${SRC} to ${TRG} using ${MODEL} ...."
 	mkdir -p $(dir $@)
 	my-fancy-translation-tool -model /path/to/${MODEL} -from ${SRC} -to ${TRG} < $< > $@

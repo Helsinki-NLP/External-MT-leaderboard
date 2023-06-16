@@ -28,8 +28,8 @@ MODEL_EVAL_URL  := ${MODEL_STORAGE}/${MODEL}.eval.zip
 .PHONY: all
 all: eval-models
 
-include ../lib/config.mk
-include ../lib/eval.mk
+include ${REPOHOME}build/config.mk
+include ${REPOHOME}build/eval.mk
 
 .PHONY: fetch-model
 fetch-model:
@@ -42,9 +42,9 @@ fetch-model:
 	  git pull )
 
 .PHONY: translate
-translate: ${WORK_DIR}/${TESTSET}.${LANGPAIR}.output
+translate: ${SYSTEM_OUTPUT}
 
-${WORK_DIR}/%.${LANGPAIR}.output: ${TESTSET_SRC} ${TESTSET_TRG}
+${SYSTEM_OUTPUT}: ${TESTSET_SRC}
 	echo "create $@"
 	mkdir -p $(dir $@)
 	mkdir -p ${MODEL_DIR}

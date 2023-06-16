@@ -33,9 +33,11 @@ MODEL_LANGPAIRS := ${shell for s in ${SRC_LANGS}; do for t in ${TRG_LANGS}; do e
 .PHONY: all
 all: eval-models
 
+include ${REPOHOME}build/config.mk
+include ${REPOHOME}build/eval.mk
 
-include ../../lib/config.mk
-include ../../lib/eval.mk
+# include ../../lib/config.mk
+# include ../../lib/eval.mk
 
 
 ## MODEL_URL: location of the public model (to be stored in the score files)
@@ -58,13 +60,13 @@ fetch-model:
 ## translating a test set
 ##------------------------------------------------------
 
-.PHONY: translate
-translate: ${WORK_DIR}/${TESTSET}.${LANGPAIR}.output
-
 SRC2 = $(shell iso639 -2 -k ${SRC})
 TRG2 = $(shell iso639 -2 -k ${TRG})
 
-${WORK_DIR}/%.${LANGPAIR}.output: ${TESTSET_SRC} ${TESTSET_TRG}
+.PHONY: translate
+translate: ${SYSTEM_OUTPUT}
+
+${SYSTEM_OUTPUT}: ${TESTSET_SRC}
 	@echo "........ create $(patsubst ${WORK_DIR}/%,%,$@)"
 	@mkdir -p $(dir $@)
 	@mkdir -p ${MODEL_DIR}
@@ -86,49 +88,6 @@ ${WORK_DIR}/%.${LANGPAIR}.output: ${TESTSET_SRC} ${TESTSET_TRG}
 	@${MERGE_TRANSLATIONS} -i $@.missing -t $@.translated < $@.found > $@
 	@rm -f $@.found $@.missing $@.translated
 	@mv $@.log $(patsubst ${WORK_DIR}/%.output,${MODEL_DIR}/%.log,$@)
-
-
-
-
-# NVIDIA_GPU_QUERY = timestamp,name,pci.bus_id,driver_version,pstate,pcie.link.gen.max,pcie.link.gen.current,temperature.gpu,utilization.gpu,utilization.memory,power.draw,memory.total,memory.free,memory.used
-
-# ${WORK_DIR}/%.${LANGPAIR}.output: ${TESTSET_DIR}/%.${SRC} ${TESTSET_DIR}/%.${TRG}
-# 	@echo "........ create $(patsubst ${WORK_DIR}/%,%,$@)"
-# 	@mkdir -p $(dir $@)
-# 	@mkdir -p ${MODEL_DIR}
-# 	@echo "Translating sentences from $(notdir $<) to ${TRG}"   > $@.log
-# 	@echo ""                                                   >> $@.log
-# 	@find ${MODEL_DIR} -name '*.${LANGPAIR}.compare' -exec cat {} \; |\
-# 	${FIND_TRANSLATIONS} -i $< -o $@.found > $@.missing       2>> $@.log
-# 	@if [ -s $@.missing ]; then \
-# 	  echo "........ translate sentences from $(notdir $<)"; \
-# 	  echo " - size of (missing) sentences to translate:"      >> $@.log; \
-# 	  cat $@.missing | wc                                      >> $@.log; \
-# 	  if command -v nvidia-smi &> /dev/null; then \
-# 	    nvidia-smi --query-gpu=${NVIDIA_GPU_QUERY} --format=csv -l 1 > $@.gpu & \
-# 	    echo "nvidia-smi process ID: $$!"; \
-# 	    echo -n " - energy-comsumption counter before: "       >> $@.log; \
-# 	    python3 ../../tools/energy-consumption-counter.py      >> $@.log; \
-# 	  fi; \
-# 	  echo " - resources used to translate:"                   >> $@.log; \
-# 	  module load pytorch && \
-# 	  cat $@.missing | \
-# 	  ${TIME} -v -o $@.time \
-# 	  python3 translate-m2m100.py \
-# 		-m facebook/${MODEL} -i ${SRC2} -o ${TRG2} \
-# 		-b ${BATCH_SIZE} > $@.translated; \
-# 	  cat $@.time >> $@.log; \
-# 	  if command -v nvidia-smi &> /dev/null; then \
-# 	    kill %1; \
-# 	    echo -n " - energy-comsumption counter after: "        >> $@.log; \
-# 	    python3 ../../tools/energy-consumption-counter.py      >> $@.log; \
-# 	    echo " - GPU utlization:"                              >> $@.log; \
-# 	    cat $@.gpu                                             >> $@.log; \
-# 	  fi \
-# 	fi
-# 	@${MERGE_TRANSLATIONS} -i $@.missing -t $@.translated < $@.found > $@
-# 	@rm -f $@.found $@.missing $@.translated $@.time $@.gpu
-# 	@mv $@.log $(patsubst ${WORK_DIR}/%.output,${MODEL_DIR}/%.log,$@)
 
 
 

@@ -32,22 +32,21 @@ all:
 	${MAKE} MODEL=Narrativa/mbart-large-50-finetuned-opus-pt-en-translation \
 		MODEL_LANGPAIRS=por-eng TRGID=en_XX SRCID=pt_XX eval-model
 
-include ../lib/config.mk
-include ../lib/eval.mk
+include ${REPOHOME}build/config.mk
+include ${REPOHOME}build/eval.mk
 
 .PHONY: fetch-model
 fetch-model:
 	@echo "nothing to be done"
 
-.PHONY: translate
-translate: ${WORK_DIR}/${TESTSET}.${LANGPAIR}.output
-
 
 SRCID ?= en_XX
 TRGID ?= pt_XX
 
+.PHONY: translate
+translate: ${SYSTEM_OUTPUT}
 
-${WORK_DIR}/%.${LANGPAIR}.output: ${TESTSET_SRC} ${TESTSET_TRG}
+${SYSTEM_OUTPUT}: ${TESTSET_SRC}
 	echo "create $@"
 	mkdir -p $(dir $@)
 	mkdir -p ${MODEL_DIR}

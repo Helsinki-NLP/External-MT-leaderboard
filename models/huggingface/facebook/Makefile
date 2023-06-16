@@ -15,7 +15,9 @@ all:
 	${MAKE} nllb-jobs
 	${MAKE} m2m100-jobs
 
-include ../../lib/config.mk
+
+include ${REPOHOME}build/config.mk
+# include ../../lib/config.mk
 
 
 

@@ -12857,7 +12857,6 @@ eng-epo	tatoeba-test-v2021-03-30	0.7126	52.5	https://huggingface.co/facebook/nll
 eng-epo	tatoeba-test-v2021-08-07	0.71435	52.6	https://huggingface.co/facebook/nllb-200-distilled-1.3B	17675	137503
 eng-est	flores101-devtest	0.54511	20.6	https://huggingface.co/facebook/nllb-200-distilled-1.3B	1012	19788
 eng-est	flores200-devtest	0.54511	20.6	https://huggingface.co/facebook/nllb-200-distilled-1.3B	1012	19788
-eng-est	newsdev2018	0.52566	20.4	https://huggingface.co/facebook/nllb-200-distilled-1.3B	2000	34492
 eng-est	newstest2018	0.53651	20.8	https://huggingface.co/facebook/nllb-200-distilled-1.3B	2000	36269
 eng-est	tatoeba-test-v2021-08-07	0.67444	48.0	https://huggingface.co/facebook/nllb-200-distilled-1.3B	1359	7992
 eng-eus	flores200-devtest	0.51865	14.9	https://huggingface.co/facebook/nllb-200-distilled-1.3B	1012	20788
@@ -12874,7 +12873,6 @@ eng-fas	tico19-test	0.00962	0.4	https://huggingface.co/facebook/nllb-200-distill
 eng-fij	flores200-devtest	0.46051	17.5	https://huggingface.co/facebook/nllb-200-distilled-1.3B	1012	32767
 eng-fin	flores101-devtest	0.53549	20.0	https://huggingface.co/facebook/nllb-200-distilled-1.3B	1012	18781
 eng-fin	flores200-devtest	0.53549	20.0	https://huggingface.co/facebook/nllb-200-distilled-1.3B	1012	18781
-eng-fin	newsdev2015	0.51865	18.0	https://huggingface.co/facebook/nllb-200-distilled-1.3B	1500	23091
 eng-fin	newstest2015	0.53155	19.7	https://huggingface.co/facebook/nllb-200-distilled-1.3B	1370	19735
 eng-fin	newstest2016	0.54071	21.0	https://huggingface.co/facebook/nllb-200-distilled-1.3B	3000	47678
 eng-fin	newstest2017	0.55656	22.5	https://huggingface.co/facebook/nllb-200-distilled-1.3B	3002	45269
@@ -12894,7 +12892,6 @@ eng-fra	multi30k_test_2016_flickr	0.70492	51.2	https://huggingface.co/facebook/n
 eng-fra	multi30k_test_2017_flickr	0.71385	51.1	https://huggingface.co/facebook/nllb-200-distilled-1.3B	1000	12118
 eng-fra	multi30k_test_2017_mscoco	0.71615	52.3	https://huggingface.co/facebook/nllb-200-distilled-1.3B	461	5484
 eng-fra	multi30k_test_2018_flickr	0.65942	44.2	https://huggingface.co/facebook/nllb-200-distilled-1.3B	1071	15867
-eng-fra	newsdiscussdev2015	0.59805	34.1	https://huggingface.co/facebook/nllb-200-distilled-1.3B	1500	27940
 eng-fra	newsdiscusstest2015	0.63423	38.8	https://huggingface.co/facebook/nllb-200-distilled-1.3B	1500	27975
 eng-fra	newssyscomb2009	0.58346	31.4	https://huggingface.co/facebook/nllb-200-distilled-1.3B	502	12331
 eng-fra	news-test2008	0.55343	28.2	https://huggingface.co/facebook/nllb-200-distilled-1.3B	2051	52685
@@ -12932,12 +12929,10 @@ eng-grn	flores200-devtest	0.39136	9.5	https://huggingface.co/facebook/nllb-200-d
 eng-grn	tatoeba-test-v2021-03-30	0.39973	15.3	https://huggingface.co/facebook/nllb-200-distilled-1.3B	224	1303
 eng-guj	flores101-devtest	0.53468	22.2	https://huggingface.co/facebook/nllb-200-distilled-1.3B	1012	23840
 eng-guj	flores200-devtest	0.53468	22.2	https://huggingface.co/facebook/nllb-200-distilled-1.3B	1012	23840
-eng-guj	newsdev2019	0.55703	24.0	https://huggingface.co/facebook/nllb-200-distilled-1.3B	1998	39137
 eng-guj	newstest2019	0.5639	24.5	https://huggingface.co/facebook/nllb-200-distilled-1.3B	998	21924
 eng-hat	flores200-devtest	0.52701	23.4	https://huggingface.co/facebook/nllb-200-distilled-1.3B	1012	25833
 eng-hau	flores101-devtest	0.5193	24.4	https://huggingface.co/facebook/nllb-200-distilled-1.3B	1012	27730
 eng-hau	flores200-devtest	0.5193	24.4	https://huggingface.co/facebook/nllb-200-distilled-1.3B	1012	27730
-eng-hau	newsdev2021	0.52171	21.3	https://huggingface.co/facebook/nllb-200-distilled-1.3B	2000	63347
 eng-hau	newstest2021	0.53106	27.1	https://huggingface.co/facebook/nllb-200-distilled-1.3B	4459	106618
 eng-hau	tico19-test	0.5402	25.7	https://huggingface.co/facebook/nllb-200-distilled-1.3B	2100	64509
 eng-heb	flores101-devtest	0.56856	27.1	https://huggingface.co/facebook/nllb-200-distilled-1.3B	1012	20749
@@ -12947,7 +12942,6 @@ eng-heb	tatoeba-test-v2021-03-30	0.59217	37.7	https://huggingface.co/facebook/nl
 eng-heb	tatoeba-test-v2021-08-07	0.59246	37.7	https://huggingface.co/facebook/nllb-200-distilled-1.3B	10519	63628
 eng-hin	flores101-devtest	0.55866	30.4	https://huggingface.co/facebook/nllb-200-distilled-1.3B	1012	27743
 eng-hin	flores200-devtest	0.55866	30.4	https://huggingface.co/facebook/nllb-200-distilled-1.3B	1012	27743
-eng-hin	newsdev2014	0.50925	23.5	https://huggingface.co/facebook/nllb-200-distilled-1.3B	520	9538
 eng-hin	newstest2014	0.51453	24.0	https://huggingface.co/facebook/nllb-200-distilled-1.3B	2507	60872
 eng-hin	tatoeba-test-v2021-08-07	0.55966	31.1	https://huggingface.co/facebook/nllb-200-distilled-1.3B	5000	32904
 eng-hin	tico19-test	0.6454	42.2	https://huggingface.co/facebook/nllb-200-distilled-1.3B	2100	62680
@@ -12979,7 +12973,6 @@ eng-ind	tatoeba-test-v2021-08-07	0.63909	39.4	https://huggingface.co/facebook/nl
 eng-ind	tico19-test	0.74237	51.3	https://huggingface.co/facebook/nllb-200-distilled-1.3B	2100	52102
 eng-isl	flores101-devtest	0.47915	20.3	https://huggingface.co/facebook/nllb-200-distilled-1.3B	1012	22834
 eng-isl	flores200-devtest	0.47915	20.3	https://huggingface.co/facebook/nllb-200-distilled-1.3B	1012	22834
-eng-isl	newsdev2021	0.49733	21.1	https://huggingface.co/facebook/nllb-200-distilled-1.3B	2004	43721
 eng-isl	newstest2021	0.50106	20.9	https://huggingface.co/facebook/nllb-200-distilled-1.3B	1000	25233
 eng-isl	tatoeba-test-v2020-07-28	0.54755	32.3	https://huggingface.co/facebook/nllb-200-distilled-1.3B	2500	18999
 eng-isl	tatoeba-test-v2021-03-30	0.54755	32.3	https://huggingface.co/facebook/nllb-200-distilled-1.3B	4994	37970
@@ -12999,7 +12992,6 @@ eng-jav	tatoeba-test-v2021-08-07	0.35833	13.5	https://huggingface.co/facebook/nl
 eng-jpn	flores101-devtest	0.00312	0.0	https://huggingface.co/facebook/nllb-200-distilled-1.3B	1012	33286
 eng-jpn	flores200-devtest	0.00312	0.0	https://huggingface.co/facebook/nllb-200-distilled-1.3B	1012	33286
 eng-jpn	generaltest2022	0.234	2.2	https://huggingface.co/facebook/nllb-200-distilled-1.3B	2037	2678
-eng-jpn	newsdev2020	0.22373	11.7	https://huggingface.co/facebook/nllb-200-distilled-1.3B	1998	60386
 eng-jpn	newstest2020	0.00207	0.0	https://huggingface.co/facebook/nllb-200-distilled-1.3B	1000	33535
 eng-jpn	newstest2021	0.00214	0.0	https://huggingface.co/facebook/nllb-200-distilled-1.3B	1000	34850
 eng-jpn	tatoeba-test-v2020-07-28	0.00012	0.0	https://huggingface.co/facebook/nllb-200-distilled-1.3B	10000	114316
@@ -13023,7 +13015,6 @@ eng-kat	tatoeba-test-v2021-03-30	0.31098	13.2	https://huggingface.co/facebook/nl
 eng-kat	tatoeba-test-v2021-08-07	0.31044	13.0	https://huggingface.co/facebook/nllb-200-distilled-1.3B	984	4474
 eng-kaz	flores101-devtest	0.50066	16.7	https://huggingface.co/facebook/nllb-200-distilled-1.3B	1012	19853
 eng-kaz	flores200-devtest	0.50066	16.7	https://huggingface.co/facebook/nllb-200-distilled-1.3B	1012	19853
-eng-kaz	newsdev2019	0.47262	11.7	https://huggingface.co/facebook/nllb-200-distilled-1.3B	2066	42454
 eng-kaz	newstest2019	0.45182	10.8	https://huggingface.co/facebook/nllb-200-distilled-1.3B	998	18810
 eng-kaz	tatoeba-test-v2020-07-28	0.5244	25.1	https://huggingface.co/facebook/nllb-200-distilled-1.3B	397	2151
 eng-kaz	tatoeba-test-v2021-03-30	0.52962	25.9	https://huggingface.co/facebook/nllb-200-distilled-1.3B	409	2210
@@ -13039,7 +13030,6 @@ eng-khm	tatoeba-test-v2020-07-28	0.37547	0.7	https://huggingface.co/facebook/nll
 eng-khm	tatoeba-test-v2021-03-30	0.37553	0.7	https://huggingface.co/facebook/nllb-200-distilled-1.3B	754	1741
 eng-khm	tatoeba-test-v2021-08-07	0.37371	0.7	https://huggingface.co/facebook/nllb-200-distilled-1.3B	726	1692
 eng-khm	tico19-test	0.51016	8.5	https://huggingface.co/facebook/nllb-200-distilled-1.3B	2100	15810
-eng-khm	wikipedia.dev.km-en	0.31742	2.4	https://huggingface.co/facebook/nllb-200-distilled-1.3B	2378	14532
 eng-khm	wikipedia.devtest.km-en	0.28567	0.1	https://huggingface.co/facebook/nllb-200-distilled-1.3B	2309	8834
 eng-kik	flores200-devtest	0.36765	10.0	https://huggingface.co/facebook/nllb-200-distilled-1.3B	1012	26527
 eng-kin	flores200-devtest	0.48353	16.0	https://huggingface.co/facebook/nllb-200-distilled-1.3B	1012	22774
@@ -13070,7 +13060,6 @@ eng-lin	flores200-devtest	0.49475	17.4	https://huggingface.co/facebook/nllb-200-
 eng-lin	tico19-test	0.50926	20.5	https://huggingface.co/facebook/nllb-200-distilled-1.3B	2100	61116
 eng-lit	flores101-devtest	0.5317	21.5	https://huggingface.co/facebook/nllb-200-distilled-1.3B	1012	20695
 eng-lit	flores200-devtest	0.5317	21.5	https://huggingface.co/facebook/nllb-200-distilled-1.3B	1012	20695
-eng-lit	newsdev2019	0.54136	21.3	https://huggingface.co/facebook/nllb-200-distilled-1.3B	2000	39627
 eng-lit	newstest2019	0.48986	15.2	https://huggingface.co/facebook/nllb-200-distilled-1.3B	998	19711
 eng-lit	tatoeba-test-v2020-07-28	0.65178	37.3	https://huggingface.co/facebook/nllb-200-distilled-1.3B	2500	14798
 eng-lit	tatoeba-test-v2021-03-30	0.65156	37.3	https://huggingface.co/facebook/nllb-200-distilled-1.3B	5003	29598
@@ -13171,7 +13160,6 @@ eng-pes	tatoeba-test-v2021-08-07	0.37894	12.3	https://huggingface.co/facebook/nl
 eng-plt	flores200-devtest	0.52272	16.9	https://huggingface.co/facebook/nllb-200-distilled-1.3B	1012	25582
 eng-pol	flores101-devtest	0.48968	19.6	https://huggingface.co/facebook/nllb-200-distilled-1.3B	1012	22520
 eng-pol	flores200-devtest	0.48968	19.6	https://huggingface.co/facebook/nllb-200-distilled-1.3B	1012	22520
-eng-pol	newsdev2020	0.54529	24.9	https://huggingface.co/facebook/nllb-200-distilled-1.3B	2000	41491
 eng-pol	newstest2020	0.5248	22.6	https://huggingface.co/facebook/nllb-200-distilled-1.3B	1000	23855
 eng-pol	tatoeba-test-v2020-07-28	0.65546	44.6	https://huggingface.co/facebook/nllb-200-distilled-1.3B	10000	64925
 eng-pol	tatoeba-test-v2021-03-30	0.65563	44.6	https://huggingface.co/facebook/nllb-200-distilled-1.3B	10056	65321
@@ -13191,7 +13179,6 @@ eng-pus	wikipedia.devtest	0.00049	0.0	https://huggingface.co/facebook/nllb-200-d
 eng-quy	flores200-devtest	0.2722	2.1	https://huggingface.co/facebook/nllb-200-distilled-1.3B	1012	18952
 eng-ron	flores101-devtest	0.60367	33.7	https://huggingface.co/facebook/nllb-200-distilled-1.3B	1012	26799
 eng-ron	flores200-devtest	0.60367	33.7	https://huggingface.co/facebook/nllb-200-distilled-1.3B	1012	26799
-eng-ron	newsdev2016	0.59422	31.5	https://huggingface.co/facebook/nllb-200-distilled-1.3B	1999	51300
 eng-ron	newstest2016	0.57373	29.4	https://huggingface.co/facebook/nllb-200-distilled-1.3B	1999	48945
 eng-ron	tatoeba-test-v2020-07-28	0.66665	46.1	https://huggingface.co/facebook/nllb-200-distilled-1.3B	5000	36851
 eng-ron	tatoeba-test-v2021-03-30	0.67052	46.7	https://huggingface.co/facebook/nllb-200-distilled-1.3B	10019	73774
@@ -13221,7 +13208,6 @@ eng-sat	flores200-devtest	0.00078	0.1	https://huggingface.co/facebook/nllb-200-d
 eng-scn	flores200-devtest	0.42794	10.7	https://huggingface.co/facebook/nllb-200-distilled-1.3B	1012	25160
 eng-shn	flores200-devtest	0.388	5.1	https://huggingface.co/facebook/nllb-200-distilled-1.3B	1012	11274
 eng-sin	flores200-devtest	0.44906	12.3	https://huggingface.co/facebook/nllb-200-distilled-1.3B	1012	23278
-eng-sin	wikipedia.dev	0.41013	9.6	https://huggingface.co/facebook/nllb-200-distilled-1.3B	2898	48607
 eng-sin	wikipedia.devtest	0.4144	9.8	https://huggingface.co/facebook/nllb-200-distilled-1.3B	2766	46214
 eng-sin	wikipedia.test	0.40108	8.3	https://huggingface.co/facebook/nllb-200-distilled-1.3B	2905	47935
 eng-slk	flores101-devtest	0.57789	31.1	https://huggingface.co/facebook/nllb-200-distilled-1.3B	1012	22543
@@ -13272,7 +13258,6 @@ eng-swh	flores200-devtest	0.59872	31.1	https://huggingface.co/facebook/nllb-200-
 eng-szl	flores200-devtest	0.51699	21.7	https://huggingface.co/facebook/nllb-200-distilled-1.3B	1012	22857
 eng-tam	flores101-devtest	0.5647	16.7	https://huggingface.co/facebook/nllb-200-distilled-1.3B	1012	19991
 eng-tam	flores200-devtest	0.5647	16.7	https://huggingface.co/facebook/nllb-200-distilled-1.3B	1012	19991
-eng-tam	newsdev2020	0.53673	11.6	https://huggingface.co/facebook/nllb-200-distilled-1.3B	1989	35520
 eng-tam	newstest2020	0.51591	9.3	https://huggingface.co/facebook/nllb-200-distilled-1.3B	1000	19606
 eng-tam	tatoeba-test-v2021-03-30	0.49958	11.6	https://huggingface.co/facebook/nllb-200-distilled-1.3B	313	1509
 eng-tam	tatoeba-test-v2021-08-07	0.49836	11.6	https://huggingface.co/facebook/nllb-200-distilled-1.3B	311	1501
@@ -13306,7 +13291,6 @@ eng-tuk	tatoeba-test-v2021-08-07	0.47932	18.1	https://huggingface.co/facebook/nl
 eng-tum	flores200-devtest	0.36287	9.1	https://huggingface.co/facebook/nllb-200-distilled-1.3B	1012	27273
 eng-tur	flores101-devtest	0.58084	25.3	https://huggingface.co/facebook/nllb-200-distilled-1.3B	1012	20253
 eng-tur	flores200-devtest	0.58084	25.3	https://huggingface.co/facebook/nllb-200-distilled-1.3B	1012	20253
-eng-tur	newsdev2016	0.56488	20.2	https://huggingface.co/facebook/nllb-200-distilled-1.3B	1001	15958
 eng-tur	newstest2016	0.54979	20.7	https://huggingface.co/facebook/nllb-200-distilled-1.3B	3000	50782
 eng-tur	newstest2017	0.55624	21.6	https://huggingface.co/facebook/nllb-200-distilled-1.3B	3007	51977
 eng-tur	newstest2018	0.54699	19.3	https://huggingface.co/facebook/nllb-200-distilled-1.3B	3000	53731
@@ -13713,7 +13697,6 @@ est-ell	flores101-devtest	0.44442	17.3	https://huggingface.co/facebook/nllb-200-
 est-ell	flores200-devtest	0.44442	17.3	https://huggingface.co/facebook/nllb-200-distilled-1.3B	1012	26615
 est-eng	flores101-devtest	0.61651	35.2	https://huggingface.co/facebook/nllb-200-distilled-1.3B	1012	24721
 est-eng	flores200-devtest	0.61651	35.2	https://huggingface.co/facebook/nllb-200-distilled-1.3B	1012	24721
-est-eng	newsdev2018	0.57587	31.5	https://huggingface.co/facebook/nllb-200-distilled-1.3B	2000	43068
 est-eng	newstest2018	0.58221	31.2	https://huggingface.co/facebook/nllb-200-distilled-1.3B	2000	45405
 est-eng	tatoeba-test-v2021-08-07	0.71575	56.3	https://huggingface.co/facebook/nllb-200-distilled-1.3B	1359	8811
 est-epo	flores200-devtest	0.49587	19.3	https://huggingface.co/facebook/nllb-200-distilled-1.3B	1012	23873

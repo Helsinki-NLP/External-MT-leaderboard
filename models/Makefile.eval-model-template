@@ -54,8 +54,8 @@ all: eval-models
 PWD      := ${shell pwd}
 REPOHOME := ${PWD}/../../
 
-include ../lib/config.mk
-include ../lib/eval.mk
+include ${REPOHOME}build/config.mk
+include ${REPOHOME}build/eval.mk
 
 
 ##-----------------------------------------------------------------------------
@@ -80,7 +80,7 @@ fetch-model:
 ## for all supported language pairs (specified by MODEL_LANGPAIRS)
 ## SRC and TRG will be taken from each supported language pair
 
-${WORK_DIR}/%.${LANGPAIR}.output: ${TESTSET_SRC} ${TESTSET_TRG}
+${SYSTEM_OUTPUT}: ${TESTSET_SRC}
 	@echo "translate $< from ${SRC} to ${TRG} using ${MODEL} ...."
 	mkdir -p $(dir $@)
 	my-fancy-translation-tool -model /path/to/${MODEL} -from ${SRC} -to ${TRG} < $< > $@

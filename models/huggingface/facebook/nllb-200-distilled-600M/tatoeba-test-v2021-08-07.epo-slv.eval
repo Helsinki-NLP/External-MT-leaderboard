@@ -1,0 +1,4 @@
+BLEU|nrefs:1|case:mixed|eff:no|tok:13a|smooth:exp|version:2.3.1 = 14.8 33.7/11.9/10.8/11.1 (BP = 1.000 ratio = 1.000 hyp_len = 2022 ref_len = 2021)
+BLEU|nrefs:1|case:mixed|eff:no|tok:flores200|smooth:exp|version:2.3.1 = 11.8 30.3/11.7/9.1/8.6 (BP = 0.916 ratio = 0.919 hyp_len = 2751 ref_len = 2992)
+chrF2++|nrefs:1|case:mixed|eff:yes|nc:6|nw:2|space:no|version:2.3.1 = 0.25317
+chrF2|nrefs:1|case:mixed|eff:yes|nc:6|nw:0|space:no|version:2.3.1 = 0.26208

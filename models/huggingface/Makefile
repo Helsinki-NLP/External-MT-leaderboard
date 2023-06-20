@@ -3,8 +3,8 @@
 # recipes for running benchmarks with models from the HF model hub
 #
 
-PWD      := ${shell pwd}
-REPOHOME := ${PWD}/../../
+REPOHOME := $(dir $(lastword ${MAKEFILE_LIST}))../../
+MAKEDIR  := ${REPOHOME}build/
 
 
 ## the file with all the models we can run
@@ -51,8 +51,8 @@ MODEL_URL       := huggingface/${MODEL}
 BATCH_SIZE = 16
 MAX_LENGTH = 500
 
-include ${REPOHOME}build/config.mk
-include ${REPOHOME}build/eval.mk
+include ${MAKEDIR}config.mk
+include ${MAKEDIR}eval.mk
 
 
 .PHONY: all

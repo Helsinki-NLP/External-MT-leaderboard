@@ -12,10 +12,8 @@
 #  make cleanup
 #--------------------------------------------------------------------
 
-PWD      ?= ${shell pwd}
-REPOHOME ?= ${PWD}/../
-MAKEDIR  ?= ${REPOHOME}build/
-
+REPOHOME := $(dir $(lastword ${MAKEFILE_LIST}))../
+MAKEDIR  := ${REPOHOME}build/
 
 include ${MAKEDIR}remove.mk
 include ${MAKEDIR}misc.mk

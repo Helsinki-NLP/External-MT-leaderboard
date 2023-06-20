@@ -17,8 +17,7 @@ all-langpairs:
 	find scores/ -name '*.txt' | grep -v unsorted | xargs git add
 
 
-include ${REPOHOME}build/leaderboards.mk
-include ${REPOHOME}build/config.mk
-include ${REPOHOME}build/slurm.mk
-
+include build/leaderboards.mk
+include build/config.mk
+include build/slurm.mk
 

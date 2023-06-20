@@ -3,8 +3,8 @@
 # recipes for evaluating facebook models (from huggingface model hub)
 #
 
-PWD      := ${shell pwd}
-REPOHOME := ${PWD}/../../../
+REPOHOME := $(dir $(lastword ${MAKEFILE_LIST}))../../../
+MAKEDIR  := ${REPOHOME}build/
 
 
 
@@ -16,7 +16,7 @@ all:
 	${MAKE} m2m100-jobs
 
 
-include ${REPOHOME}build/config.mk
+include ${MAKEDIR}config.mk
 # include ../../lib/config.mk
 
 

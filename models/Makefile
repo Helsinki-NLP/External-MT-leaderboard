@@ -7,8 +7,8 @@
 #  - a flag will be created to mark that scores are registered
 #
 
-PWD      := ${shell pwd}
-REPOHOME := ${PWD}/../
+REPOHOME := $(dir $(lastword ${MAKEFILE_LIST}))../
+MAKEDIR  := ${REPOHOME}build/
 
 
 SOURCE      ?= huggingface
@@ -20,8 +20,8 @@ all: register-all
 	${MAKE} upload-all
 
 
-include ${REPOHOME}build/config.mk
-include ${REPOHOME}build/register.mk
-include ${REPOHOME}build/storage.mk
+include ${MAKEDIR}config.mk
+include ${MAKEDIR}register.mk
+include ${MAKEDIR}storage.mk
 
 

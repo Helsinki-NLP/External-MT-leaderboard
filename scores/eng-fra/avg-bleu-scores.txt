@@ -1,7 +1,11 @@
-flores multi30k news tatoeba tico19-test
-44.68	huggingface/facebook/nllb-200-3.3B
-43.8784848484848	huggingface/facebook/nllb-200-1.3B
-41.809696969697	huggingface/facebook/nllb-200-distilled-600M
-40.2727777777778	huggingface/facebook/m2m100_1.2B
-34.6422222222222	huggingface/facebook/m2m100_418M
-1.35666666666667	huggingface/JamesH/Translation_en_to_fr_project
+multi30k news tatoeba
+45	huggingface/facebook/nllb-200-3.3B
+44.9916666666667	../models/huggingface/facebook/nllb-200-distilled-1.3B
+43.9511111111111	huggingface/facebook/nllb-200-1.3B
+43.9416666666667	huggingface/facebook/nllb-200-distilled-1.3B
+42.6083333333333	../models/huggingface/facebook/nllb-200-distilled-600M
+41.7777777777778	huggingface/facebook/nllb-200-distilled-600M
+39.187962962963	huggingface/facebook/m2m100_1.2B
+33.337037037037	huggingface/facebook/m2m100_418M
+1.23333333333333	../models/huggingface/JamesH/Translation_en_to_fr_project
+0.837777777777778	huggingface/JamesH/Translation_en_to_fr_project

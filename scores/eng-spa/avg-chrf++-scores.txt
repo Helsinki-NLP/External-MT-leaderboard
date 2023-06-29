@@ -1,9 +1,9 @@
-flores news tatoeba tico19-test
-0.638366428571429	huggingface/facebook/nllb-200-3.3B
-0.636554479166667	huggingface/facebook/nllb-200-distilled-1.3B
-0.635921145833333	huggingface/facebook/nllb-200-1.3B
-0.6227625	huggingface/facebook/nllb-200-distilled-600M
-0.607669404761905	huggingface/facebook/m2m100_1.2B
-0.578915476190476	huggingface/facebook/m2m100_418M
-0.52845	huggingface/razwand/opus-mt-en-mul-finetuned_en_sp_translator
-0.115682619047619	huggingface/mrm8488/mbart-large-finetuned-opus-en-es-translation
+news tico19-test
+0.655247857142857	huggingface/facebook/nllb-200-3.3B
+0.651375625	huggingface/facebook/nllb-200-1.3B
+0.6377575	../models/huggingface/facebook/nllb-200-distilled-1.3B
+0.629417142857143	huggingface/facebook/m2m100_1.2B
+0.6251625	../models/huggingface/facebook/nllb-200-distilled-600M
+0.605194285714286	huggingface/facebook/m2m100_418M
+0.540565	../models/huggingface/razwand/opus-mt-en-mul-finetuned_en_sp_translator
+0.1516325	../models/huggingface/mrm8488/mbart-large-finetuned-opus-en-es-translation

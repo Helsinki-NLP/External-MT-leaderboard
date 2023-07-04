@@ -18,3 +18,7 @@ MAKEDIR  := ${REPOHOME}build/
 include ${MAKEDIR}remove.mk
 include ${MAKEDIR}misc.mk
 include ${MAKEDIR}slurm.mk
+
+
+fix-model-list-error:
+	find ../scores -name '*.txt' -exec sed -i 's#../models/##' {} \;

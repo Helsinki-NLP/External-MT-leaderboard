@@ -1,5 +1,10 @@
 # -*-makefile-*-
 
+REPOHOME := $(dir $(lastword ${MAKEFILE_LIST}))
+MAKEDIR  := ${REPOHOME}build/
+
+OVERVIEW_FILES := scores/langpairs.txt scores/benchmarks.txt
+
 
 .PHONY: all
 all: scores
@@ -16,8 +21,17 @@ all-langpairs:
 	${MAKE} -s scores/langpairs.txt scores/benchmarks.txt
 	find scores/ -name '*.txt' | grep -v unsorted | xargs git add
 
+update-git:
+	git add $(OVERVIEW_FILES)
+	find scores -type f -name '*.txt' | xargs git add
+	find models -type f -name '*.txt' | xargs git add
+	find models -type f -name '*.registered' | xargs git add
+	find models -type f -name '*.output' | xargs git add
+	find models -type f -name '*.eval' | xargs git add
+	find models -type f -name '*.logfiles' | xargs git add
+	find models -type f -name '*.zip' | grep -v '.eval.zip' | xargs git add
 
-include build/leaderboards.mk
-include build/config.mk
-include build/slurm.mk
+
+include ${MAKEDIR}leaderboards.mk
+include ${MAKEDIR}config.mk
 

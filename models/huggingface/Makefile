@@ -3,9 +3,6 @@
 # recipes for running benchmarks with models from the HF model hub
 #
 
-REPOHOME := $(dir $(lastword ${MAKEFILE_LIST}))../../
-MAKEDIR  := ${REPOHOME}build/
-
 
 ## the file with all the models we can run
 ## NEW: skip mbart-based systems because of the lang-ID mess
@@ -26,6 +23,7 @@ MODEL_INFO       ?= $(firstword ${MODELS_INFO})
 ##  - MODEL_SRCLANG = target language used on HF
 
 COMMA            := ,
+PWD              := ${shell pwd}
 MODEL_HOME       := ${PWD}
 MODEL            := $(word 1,$(subst ${COMMA}, ,${MODEL_INFO}))
 MODEL_SRCLANG    := $(word 2,$(subst ${COMMA}, ,${MODEL_INFO}))
@@ -51,8 +49,8 @@ MODEL_URL       := huggingface/${MODEL}
 BATCH_SIZE = 16
 MAX_LENGTH = 500
 
-include ${MAKEDIR}config.mk
-include ${MAKEDIR}eval.mk
+include ../../build/config.mk
+include ../../build/eval.mk
 
 
 .PHONY: all

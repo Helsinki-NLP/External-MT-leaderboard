@@ -7,12 +7,8 @@
 #  - a flag will be created to mark that scores are registered
 #
 
-REPOHOME := $(dir $(lastword ${MAKEFILE_LIST}))../
-MAKEDIR  := ${REPOHOME}build/
-
-
-SOURCE      ?= huggingface
-MODEL       ?= huggingface/facebook/nllb-200-distilled-600M
+SOURCE  ?= huggingface
+MODEL   ?= huggingface/facebook/nllb-200-distilled-600M
 
 
 .PHONY: all
@@ -20,8 +16,8 @@ all: register-all
 	${MAKE} upload-all
 
 
-include ${MAKEDIR}config.mk
-include ${MAKEDIR}register.mk
-include ${MAKEDIR}storage.mk
+include ../build/config.mk
+include ../build/register.mk
+include ../build/storage.mk
 
 

@@ -3,12 +3,6 @@
 # recipes for evaluating facebook models (from huggingface model hub)
 #
 
-REPOHOME := $(dir $(lastword ${MAKEFILE_LIST}))../../../
-MAKEDIR  := ${REPOHOME}build/
-
-
-
-
 
 .PHONY: all
 all:
@@ -16,9 +10,7 @@ all:
 	${MAKE} m2m100-jobs
 
 
-include ${MAKEDIR}config.mk
-# include ../../lib/config.mk
-
+include ../../../build/config.mk
 
 
 # evaluate NLLB (see Makefile.nllb)

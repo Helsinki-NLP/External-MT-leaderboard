@@ -3,9 +3,7 @@
 # recipes for running benchmarks with models from the HF model hub
 #
 
-PWD      := ${shell pwd}
-REPOHOME := ${PWD}/../../
-
+PWD              := ${shell pwd}
 MODEL_HOME       := ${PWD}
 MODELS_FILE      := output/pipeline_models_rev.csv
 MODELS           := $(shell tail -n +2 < ${MODELS_FILE} | cut -f1 -d, | sort -u)
@@ -28,8 +26,8 @@ MODEL_EVAL_URL  := ${MODEL_STORAGE}/${MODEL}.eval.zip
 .PHONY: all
 all: eval-models
 
-include ${REPOHOME}build/config.mk
-include ${REPOHOME}build/eval.mk
+include ../../build/config.mk
+include ../../build/eval.mk
 
 .PHONY: fetch-model
 fetch-model:

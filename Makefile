@@ -1,7 +1,5 @@
 # -*-makefile-*-
 
-REPOHOME := $(dir $(lastword ${MAKEFILE_LIST}))
-MAKEDIR  := ${REPOHOME}build/
 
 OVERVIEW_FILES := scores/langpairs.txt scores/benchmarks.txt
 
@@ -10,16 +8,19 @@ OVERVIEW_FILES := scores/langpairs.txt scores/benchmarks.txt
 all: scores
 	find scores -name '*unsorted*' -empty -delete
 	${MAKE} -s updated-leaderboards
-	${MAKE} -s scores/langpairs.txt user-scores/benchmarks.txt
-	find scores -name '*.txt' | grep -v unsorted | xargs git add
+	${MAKE} -s overview-files
+#	find scores -name '*.txt' | grep -v unsorted | xargs git add
 
 
 .PHONY: all-langpairs
 all-langpairs:
 	@find scores -name '*unsorted*' -empty -delete
 	${MAKE} -s refresh-leaderboards
-	${MAKE} -s scores/langpairs.txt scores/benchmarks.txt
-	find scores/ -name '*.txt' | grep -v unsorted | xargs git add
+	${MAKE} -s overview-files
+#	find scores/ -name '*.txt' | grep -v unsorted | xargs git add
+
+.PHONY: overview-files
+overview-files: $(OVERVIEW_FILES)
 
 update-git:
 	git add $(OVERVIEW_FILES)
@@ -32,6 +33,13 @@ update-git:
 	find models -type f -name '*.zip' | grep -v '.eval.zip' | xargs git add
 
 
-include ${MAKEDIR}leaderboards.mk
-include ${MAKEDIR}config.mk
+include build/leaderboards.mk
+include build/config.mk
 
+
+fix-errors:
+	find models -name '*.registered' -delete
+	make -C models register-all
+	make all-langpairs
+
+#	find scores -name '*.txt' -exec sed -i 's#../models/##' {} \;

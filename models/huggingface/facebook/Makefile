@@ -21,6 +21,21 @@ NLLB_MODELS := 	huggingface/facebook/nllb-200-distilled-600M \
 		huggingface/facebook/nllb-200-3.3B
 
 
+commit-changes:
+	git commit -am "leaderboards updated"
+	git push origin master
+	cd nllb-200-1.3B && git ls-files --others --exclude-standard | grep '\.output' | xargs git add
+	git commit -am "more translations added for nllb-200-1.3B"
+	git push origin master
+	cd nllb-200-distilled-1.3B && git ls-files --others --exclude-standard | grep '\.output' | xargs git add
+	git commit -am "more translations added for nllb-200-distilled-1.3B"
+	git push origin master
+	cd nllb-200-distilled-600M && git ls-files --others --exclude-standard | grep '\.output' | xargs git add
+	git commit -am "more translations added for nllb-200-distilled-600M"
+	git push origin master
+
+
+
 ## create evalzip files for all benchmarks and models
 evalzip-files:
 	${MAKE} -f Makefile.nllb CREATE_BENCHMARK_EVALZIP_FILES=1 create_benchmark_evalzip_files

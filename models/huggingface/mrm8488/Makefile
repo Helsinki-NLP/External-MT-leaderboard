@@ -6,8 +6,7 @@
 PWD      := ${shell pwd}
 REPOHOME := ${PWD}/../../../
 
-MODEL_HOME       := ${PWD}/..
-MODELS           := mrm8488/mbart-large-finetuned-bible-es-en-translation
+MODELS           := huggingface/mrm8488/mbart-large-finetuned-bible-es-en-translation
 MODEL_LANGPAIRS  := spa-eng
 
 
@@ -16,9 +15,9 @@ MODEL_LANGPAIRS  := spa-eng
 ## MODEL_EVAL_URL: location of the storage space for the evaluation output files
 ## 	TODO: make sure that this is correct and also saved somewhere!
 
-MODEL_URL       := https://huggingface.co/${MODEL}
+MODEL_URL       := $(patsubst huggingface/%,https://huggingface.co%,${MODEL})
 MODEL_STORAGE   := https://object.pouta.csc.fi/External-MT-models
-MODEL_EVAL_URL  := ${MODEL_STORAGE}/${MODEL}.eval.zip
+MODEL_EVAL_URL  = ${MODEL_STORAGE}/${MODEL}.eval.zip
 
 BATCH_SIZE = 32
 MAX_LENGTH = 256
@@ -26,13 +25,13 @@ MAX_LENGTH = 256
 
 .PHONY: all
 all:
-	${MAKE} MODEL=mrm8488/mbart-large-finetuned-bible-es-en-translation \
+	${MAKE} MODEL=huggingface/mrm8488/mbart-large-finetuned-bible-es-en-translation \
 		MODEL_LANGPAIRS=spa-eng SRCID=es_XX TRGID=en_XX eval-model
-	${MAKE} MODEL=mrm8488/mbart-large-finetuned-opus-en-es-translation \
+	${MAKE} MODEL=huggingface/mrm8488/mbart-large-finetuned-opus-en-es-translation \
 		MODEL_LANGPAIRS=eng-spa SRCID=en_XX TRGID=es_XX eval-model
-	${MAKE} MODEL=mrm8488/mbart-large-finetuned-opus-es-en-translation \
+	${MAKE} MODEL=huggingface/mrm8488/mbart-large-finetuned-opus-es-en-translation \
 		MODEL_LANGPAIRS=spa-eng SRCID=es_XX TRGID=en_XX eval-model
-	${MAKE} MODEL=mrm8488/mbart-large-finetuned-opus-it-en-translation \
+	${MAKE} MODEL=huggingface/mrm8488/mbart-large-finetuned-opus-it-en-translation \
 		MODEL_LANGPAIRS=ita-eng SRCID=it_IT TRGID=en_XX eval-model
 
 
@@ -59,7 +58,8 @@ ${SYSTEM_OUTPUT}: ${TESTSET_SRC}
 	find ${MODEL_DIR} -name '*.${LANGPAIR}.compare' -exec cat {} \; |\
 	../../tools/find-missing-translations.pl -i $< -o $@.found > $@.missing
 	module load pytorch && python3 ../translate.py \
-		-m ${MODEL} -b ${BATCH_SIZE} -l ${MAX_LENGTH} \
+		-m $(patsubst huggingface/%,%,${MODEL}) \
+		-b ${BATCH_SIZE} -l ${MAX_LENGTH} \
 		-i ${SRCID} -o ${TRGID} < $@.missing > $@.translated
 	../../tools/merge-with-missing-translations.pl \
 		-i $@.missing -t $@.translated < $@.found > $@

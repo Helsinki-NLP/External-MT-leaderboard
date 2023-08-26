@@ -20,5 +20,9 @@ include ${MAKEDIR}misc.mk
 include ${MAKEDIR}slurm.mk
 
 
+filter-out-devsets:
+	make -C .. scores/benchmarks.txt
+	make remove-devsets
+
 fix-model-list-error:
 	find ../scores -name '*.txt' -exec sed -i 's#../models/##' {} \;

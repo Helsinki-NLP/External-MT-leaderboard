@@ -3,14 +3,14 @@
 # recipes for runnin benchmarks on NLLB from huggingface
 #
 
-PWD      := ${shell pwd}
-REPOHOME := ${PWD}/../../../
-MAKE     := make -f Makefile.m2m100
+PWD        := ${shell pwd}
+REPOHOME   := ${PWD}/../../../
+MAKE       := make -f Makefile.m2m100
 
 
 ## model variants
 
-MODELS := m2m100_418M m2m100_1.2B m2m100-12B-last-ckpt 
+MODELS := huggingface/facebook/m2m100_418M huggingface/facebook/m2m100_1.2B huggingface/facebook/m2m100-12B-last-ckpt 
 
 ## all languages that the model supports
 ## TODO: check that this is all correct
@@ -41,7 +41,7 @@ include ${REPOHOME}build/eval.mk
 
 
 ## MODEL_URL: location of the public model (to be stored in the score files)
-MODEL_URL := https://huggingface.co/facebook/${MODEL}
+MODEL_URL := https://huggingface.co/facebook/$(notdir ${MODEL})
 
 
 ##------------------------------------------------------
@@ -81,13 +81,12 @@ ${SYSTEM_OUTPUT}: ${TESTSET_SRC}
 	  module load pytorch && \
 	  cat $@.missing | \
 	  ${MONITOR} python3 translate-m2m100.py \
-		-m facebook/${MODEL} -i ${SRC2} -o ${TRG2} \
+		-m facebook/$(notdir ${MODEL}) -i ${SRC2} -o ${TRG2} \
 		-b ${BATCH_SIZE} \
 	  > $@.translated 2>> $@.log; \
 	fi
 	@${MERGE_TRANSLATIONS} -i $@.missing -t $@.translated < $@.found > $@
 	@rm -f $@.found $@.missing $@.translated
-	@mv $@.log $(patsubst ${WORK_DIR}/%.output,${MODEL_DIR}/%.log,$@)
-
+	@mv $@.log $(patsubst %.output,%.log,$@)
 
 

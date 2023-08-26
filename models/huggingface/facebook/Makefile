@@ -15,7 +15,15 @@ include ../../../build/config.mk
 
 # evaluate NLLB (see Makefile.nllb)
 
-NLLB_MODELS := nllb-200-distilled-600M nllb-200-distilled-1.3B nllb-200-1.3B nllb-200-3.3B
+NLLB_MODELS := 	huggingface/facebook/nllb-200-distilled-600M \
+		huggingface/facebook/nllb-200-distilled-1.3B \
+		huggingface/facebook/nllb-200-1.3B \
+		huggingface/facebook/nllb-200-3.3B
+
+
+## create evalzip files for all benchmarks and models
+evalzip-files:
+	${MAKE} -f Makefile.nllb CREATE_BENCHMARK_EVALZIP_FILES=1 create_benchmark_evalzip_files
 
 nllb-jobs:
 	for m in ${NLLB_MODELS}; do \
@@ -50,7 +58,9 @@ nllb-pack:
 
 ## evaluate M2M100 model (see Makefile.m2m100)
 
-M2M100_MODELS := m2m100_418M m2m100_1.2B m2m100-12B-last-ckpt
+M2M100_MODELS := huggingface/facebook/m2m100_418M \
+		huggingface/facebook/m2m100_1.2B \
+		huggingface/facebook/m2m100-12B-last-ckpt
 M2M100_MODEL  ?= ${firstword ${M2M100_MODELS}}
 BATCH_SIZE    ?= 16
 
@@ -58,17 +68,17 @@ m2m100:
 	${MAKE} -f Makefile.m2m100 METRICS="bleu spbleu chrf chrf++" MODELS=${M2M100_MODEL} BATCH_SIZE=${BATCH_SIZE} eval-models
 
 m2m100-jobs:
-	${MAKE} M2M100_MODEL=m2m100_418M BATCH_SIZE=16 m2m100.submit
-	${MAKE} M2M100_MODEL=m2m100_1.2B BATCH_SIZE=8 m2m100.submit
+	${MAKE} M2M100_MODEL=huggingface/facebook/m2m100_418M BATCH_SIZE=16 m2m100.submit
+	${MAKE} M2M100_MODEL=huggingface/facebook/m2m100_1.2B BATCH_SIZE=8 m2m100.submit
 
 
 m2m100-pivot:
 	${MAKE} -f Makefile.m2m100 MODELS=${M2M100_MODEL} BATCH_SIZE=${BATCH_SIZE} eval-pivot
 
 m2m100-pivot-jobs:
-	${MAKE} M2M100_MODEL=m2m100_418M BATCH_SIZE=16 m2m100-pivot.submit
-	${MAKE} M2M100_MODEL=m2m100_1.2B BATCH_SIZE=8 m2m100-pivot.submit
-	${MAKE} M2M100_MODEL=m2m100-12B-last-ckpt BATCH_SIZE=4 m2m100-pivot.submit
+	${MAKE} M2M100_MODEL=huggingface/facebook/m2m100_418M BATCH_SIZE=16 m2m100-pivot.submit
+	${MAKE} M2M100_MODEL=huggingface/facebook/m2m100_1.2B BATCH_SIZE=8 m2m100-pivot.submit
+	${MAKE} M2M100_MODEL=huggingface/facebook/m2m100-12B-last-ckpt BATCH_SIZE=4 m2m100-pivot.submit
 
 
 

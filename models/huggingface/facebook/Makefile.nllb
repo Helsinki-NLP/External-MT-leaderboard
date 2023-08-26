@@ -3,14 +3,17 @@
 # recipes for runnin benchmarks on NLLB from huggingface
 #
 
-PWD      := ${shell pwd}
-REPOHOME := ${PWD}/../../../
-MAKE     := make -f Makefile.nllb
+PWD        := ${shell pwd}
+REPOHOME   := ${PWD}/../../../
+MAKE       := make -f Makefile.nllb
 
 
 ## model variants
 
-MODELS := nllb-200-distilled-600M nllb-200-distilled-1.3B nllb-200-1.3B nllb-200-3.3B
+MODELS := 	huggingface/facebook/nllb-200-distilled-600M \
+		huggingface/facebook/nllb-200-distilled-1.3B \
+		huggingface/facebook/nllb-200-1.3B \
+		huggingface/facebook/nllb-200-3.3B
 
 ## all languages that the model supports
 ## TODO: check that this is all correct
@@ -27,8 +30,6 @@ TRG_LANGS := ${FLORES200_LANGS}
 ## --> basically all combinations of languages in the list of languages
 
 MODEL_LANGPAIRS := ${shell for s in ${SRC_LANGS}; do for t in ${TRG_LANGS}; do echo "$$s-$$t"; done done}
-
-
 
 ## function to lookup the script (necessary extension to lang-IDs in the NLLB model
 ## + some fixes that OPUS-MT-testsets changed when importing flores200
@@ -77,16 +78,17 @@ eval-flores101:
 	${MAKE} SRC_LANGS="${FLORES101_LANGS}" TRG_LANGS="${FLORES101_LANGS}" eval-models
 
 
+## set langpairs to avoid slow filtering for MODEL_LANGPAIRS that exist in ALL_LANGPAIRS!
+
+LANGPAIRS := $(sort ${MODEL_LANGPAIRS})
+
 
 include ${REPOHOME}build/config.mk
 include ${REPOHOME}build/eval.mk
 
-# include ../../lib/config.mk
-# include ../../lib/eval.mk
-
 
 ## MODEL_URL: location of the public model (to be stored in the score files)
-MODEL_URL  := https://huggingface.co/facebook/${MODEL}
+MODEL_URL  := https://huggingface.co/facebook/$(notdir ${MODEL})
 
 
 ##------------------------------------------------------
@@ -96,14 +98,16 @@ MODEL_URL  := https://huggingface.co/facebook/${MODEL}
 
 .PHONY: fetch-model
 fetch-model:
-ifeq (${MODEL},nllb-200-3.3B)
-	( module load git git-lfs; \
-	  mkdir -p facebook; \
-	  cd facebook; \
-	  git clone ${MODEL_URL}; \
-	  cd ${MODEL}; \
-	  git-lfs install; \
-	  git pull )
+ifeq (${MODEL},huggingface/facebook/nllb-200-3.3B)
+	( if [ ! -e facebook/$(notdir ${MODEL}) ]; then \
+	    module load git git-lfs; \
+	    mkdir -p facebook; \
+	    cd facebook; \
+	    git clone ${MODEL_URL}; \
+	    cd $(notdir ${MODEL}); \
+	    git-lfs install; \
+	    git pull; \
+	  fi )
 else
 	@echo "nothing to be done"
 endif
@@ -115,7 +119,7 @@ endif
 ##------------------------------------------------------
 
 
-ifeq (${MODEL},nllb-200-3.3B)
+ifeq (${MODEL},huggingface/facebook/nllb-200-3.3B)
   RUNSCRIPT = nllb-accelerate.py -b 16
 else
   RUNSCRIPT = nllb.py
@@ -124,28 +128,28 @@ endif
 .PHONY: translate
 translate: ${SYSTEM_OUTPUT}
 
-${SYSTEM_OUTPUT}: ${TESTSET_SRC}
+${SYSTEM_OUTPUT}: ${TESTSET_SRC} ${TESTSET_TRG}
 	@echo "........ create $(patsubst ${WORK_DIR}/%,%,$@)"
 	@mkdir -p $(dir $@)
 	@mkdir -p ${MODEL_DIR}
 	@echo "Translating sentences from $(notdir $<) to ${TRG}"   > $@.log
 	@echo ""                                                   >> $@.log
-	find ${MODEL_DIR} -name '*.${LANGPAIR}.compare' -exec cat {} \; |\
+	@find ${MODEL_DIR} -name '*.${LANGPAIR}.compare' -exec cat {} \; |\
 	${FIND_TRANSLATIONS} -i $< -o $@.found > $@.missing       2>> $@.log
-	if [ -s $@.missing ]; then \
+	@if [ -s $@.missing ]; then \
 	  echo "........ translate sentences from $(notdir $<)"; \
 	  echo " - size of (missing) sentences to translate:"      >> $@.log; \
 	  cat $@.missing | wc                                      >> $@.log; \
 	  module load pytorch && \
 	  cat $@.missing | \
 	  ${MONITOR} python3 ${RUNSCRIPT} \
-		-m ${MODEL} \
+		-m $(notdir ${MODEL}) \
 		-i $(call NLLB_LANGID_FIXED,$(word 1,$^),${SRC}) \
 		-o $(call NLLB_LANGID_FIXED,$(word 2,$^),${TRG}) \
 	  > $@.translated 2>> $@.log; \
 	fi
 	@${MERGE_TRANSLATIONS} -i $@.missing -t $@.translated < $@.found > $@
 	@rm -f $@.found $@.missing $@.translated
-	@mv $@.log $(patsubst ${WORK_DIR}/%.output,${MODEL_DIR}/%.log,$@)
+	@mv $@.log $(patsubst %.output,%.log,$@)
 
 

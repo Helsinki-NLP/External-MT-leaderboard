@@ -8,7 +8,7 @@ multi30k_test_2017_mscoco	0.59185	huggingface/facebook/wmt19-en-de
 multi30k_test_2018_flickr	0.61166	huggingface/facebook/wmt19-en-de
 news2008	0.51789	huggingface/facebook/wmt19-en-de
 newssyscomb2009	0.52629	huggingface/facebook/wmt19-en-de
-newstest2008	0.4912	huggingface/facebook/nllb-200-distilled-1.3B
+newstest2008	0.49192	huggingface/facebook/nllb-200-3.3B
 newstest2009	0.51621	huggingface/facebook/wmt19-en-de
 newstest2010	0.54074	huggingface/facebook/wmt19-en-de
 newstest2011	0.51883	huggingface/facebook/wmt19-en-de
@@ -22,8 +22,9 @@ newstest2018	0.6952	huggingface/facebook/wmt19-en-de
 newstest2019	0.65738	huggingface/gsarti/opus-mt-tc-big-en-de
 newstest2020	0.61743	huggingface/facebook/wmt19-en-de
 newstest2021	0.63472	huggingface/facebook/nllb-200-distilled-1.3B
-newstestALL2020	0.59146	huggingface/facebook/nllb-200-distilled-1.3B
+newstestALL2020	0.59471	huggingface/facebook/nllb-200-1.3B
 newstestB2020	0.61337	huggingface/facebook/wmt19-en-de
+ntrex128	0.56112	huggingface/facebook/nllb-200-3.3B
 tatoeba-test-v2020-07-28	0.64887	huggingface/facebook/nllb-200-distilled-1.3B
 tatoeba-test-v2021-03-30	0.64265	huggingface/facebook/nllb-200-distilled-1.3B
 tatoeba-test-v2021-08-07	0.63831	huggingface/facebook/nllb-200-distilled-1.3B

@@ -10,9 +10,9 @@
 SKIP_MODELS = | egrep -v '(mbart|bert2bert|nllb-200-3.3B)'
 
 MODELS_FILE      := output/pipeline_models_rev.csv
-# MODELS         := $(shell tail -n +2 < ${MODELS_FILE} | cut -f1 -d, | sort -u)
-# MODELS_INFO    := $(shell tail -n +2 < ${MODELS_FILE})
-MODELS           := $(shell tail -n +2 < ${MODELS_FILE} | cut -f1 -d, ${SKIP_MODELS} | sort -u)
+# MODELS         := $(shell tail -n +2 < ${MODELS_FILE} | cut -f1 -d, ${SKIP_MODELS} | sort -u)
+MODELS           := $(patsubst %,huggingface/%,\
+			$(sort $(shell tail -n +2 < ${MODELS_FILE} | cut -f1 -d, ${SKIP_MODELS})))
 MODELS_INFO      := $(shell tail -n +2 < ${MODELS_FILE} ${SKIP_MODELS})
 MODEL_INFO       ?= $(firstword ${MODELS_INFO})
 
@@ -24,8 +24,7 @@ MODEL_INFO       ?= $(firstword ${MODELS_INFO})
 
 COMMA            := ,
 PWD              := ${shell pwd}
-MODEL_HOME       := ${PWD}
-MODEL            := $(word 1,$(subst ${COMMA}, ,${MODEL_INFO}))
+MODEL            := $(patsubst %,huggingface/%,$(word 1,$(subst ${COMMA}, ,${MODEL_INFO})))
 MODEL_SRCLANG    := $(word 2,$(subst ${COMMA}, ,${MODEL_INFO}))
 MODEL_TRGLANG    := $(word 3,$(subst ${COMMA}, ,${MODEL_INFO}))
 
@@ -41,7 +40,7 @@ MODEL_LANGPAIRS  := ${TESTSET_SRCLANG}-${TESTSET_TRGLANG}
 ## MODEL_STORAGE: bucket for evaluation output zip-files
 ## MODEL_EVAL_URL: location of the storage space for the evaluation output files
 
-MODEL_URL       := huggingface/${MODEL}
+MODEL_URL       := $(patsubst huggingface/%,https://huggingface.co/%,${MODEL})
 
 
 ## batch size and maximum length when decoding with transformer pipelines
@@ -93,7 +92,8 @@ ${SYSTEM_OUTPUT}: ${TESTSET_SRC}
 	find ${MODEL_DIR} -name '*.${LANGPAIR}.compare' -exec cat {} \; |\
 	../../tools/find-missing-translations.pl -i $< -o $@.found > $@.missing
 	module load pytorch && python3 translate.py \
-		-m ${MODEL} -b ${BATCH_SIZE} -l ${MAX_LENGTH} \
+		-m $(patsubst huggingface/%,%,${MODEL}) \
+		-b ${BATCH_SIZE} -l ${MAX_LENGTH} \
 		-i ${MODEL_SRCLANG} -o ${MODEL_TRGLANG} < $@.missing > $@.translated
 	../../tools/merge-with-missing-translations.pl \
 		-i $@.missing -t $@.translated < $@.found > $@

@@ -6,9 +6,8 @@
 PWD      := ${shell pwd}
 REPOHOME := ${PWD}/../../../
 
-MODEL_HOME       := ${PWD}/..
-MODELS           := Narrativa/mbart-large-50-finetuned-opus-en-pt-translation
-MODEL            := Narrativa/mbart-large-50-finetuned-opus-en-pt-translation
+MODELS           := huggingface/Narrativa/mbart-large-50-finetuned-opus-en-pt-translation
+MODEL            := huggingface/Narrativa/mbart-large-50-finetuned-opus-en-pt-translation
 MODEL_LANGPAIRS  := eng-por
 
 
@@ -17,7 +16,7 @@ MODEL_LANGPAIRS  := eng-por
 ## MODEL_EVAL_URL: location of the storage space for the evaluation output files
 ## 	TODO: make sure that this is correct and also saved somewhere!
 
-MODEL_URL       := https://huggingface.co/${MODEL}
+MODEL_URL       := $(patsubst huggingface/%,https://huggingface.co%,${MODEL})
 MODEL_STORAGE   := https://object.pouta.csc.fi/External-MT-models
 MODEL_EVAL_URL  := ${MODEL_STORAGE}/${MODEL}.eval.zip
 
@@ -27,9 +26,9 @@ MAX_LENGTH = 256
 
 .PHONY: all
 all:
-	${MAKE} MODEL=Narrativa/mbart-large-50-finetuned-opus-en-pt-translation \
+	${MAKE} MODEL=huggingface/Narrativa/mbart-large-50-finetuned-opus-en-pt-translation \
 		MODEL_LANGPAIRS=eng-por SRCID=en_XX TRGID=pt_XX eval-model
-	${MAKE} MODEL=Narrativa/mbart-large-50-finetuned-opus-pt-en-translation \
+	${MAKE} MODEL=huggingface/Narrativa/mbart-large-50-finetuned-opus-pt-en-translation \
 		MODEL_LANGPAIRS=por-eng TRGID=en_XX SRCID=pt_XX eval-model
 
 include ${REPOHOME}build/config.mk
@@ -53,7 +52,8 @@ ${SYSTEM_OUTPUT}: ${TESTSET_SRC}
 	find ${MODEL_DIR} -name '*.${LANGPAIR}.compare' -exec cat {} \; |\
 	../../tools/find-missing-translations.pl -i $< -o $@.found > $@.missing
 	module load pytorch && python3 ../translate.py \
-		-m ${MODEL} -b ${BATCH_SIZE} -l ${MAX_LENGTH} \
+		-m $(patsubst huggingface/%,%,${MODEL}) \
+		-b ${BATCH_SIZE} -l ${MAX_LENGTH} \
 		-i ${SRCID} -o ${TRGID} < $@.missing > $@.translated
 	../../tools/merge-with-missing-translations.pl \
 		-i $@.missing -t $@.translated < $@.found > $@

@@ -22,16 +22,21 @@ all-langpairs:
 .PHONY: overview-files
 overview-files: $(OVERVIEW_FILES)
 
+push-and-commit-git:
+	git commit -am 'updated leaderboards'
+	git push origin master
+
 update-git:
 	cd scores && git ls-files --others --exclude-standard | grep '\.txt$$' | xargs git add
 	cd models && git ls-files --others --exclude-standard | grep '\.txt$$' | xargs git add
 	cd models && git ls-files --others --exclude-standard | grep '\.registered$$' | xargs git add
 	cd models && git ls-files --others --exclude-standard | grep '\.output$$' | xargs git add
-	cd models && git ls-files --others --exclude-standard | grep '\.eval$$' | xargs git add
 	cd models && git ls-files --others --exclude-standard | grep '\.evalfiles.zip$$' | xargs git add
 	cd models && git ls-files --others --exclude-standard | grep '\.logfiles$$' | xargs git add
-	cd models && git ls-files --others --exclude-standard | grep '\.zip$$' | \
-	grep -v '\.eval\.zip$$' | grep -v '\.log\.zip$$' | xargs git add
+#	cd models && git ls-files --others --exclude-standard | grep '\.eval$$' | xargs git add
+#	cd models && git ls-files --others --exclude-standard | grep '\.zip$$' | \
+#	grep -v '\.eval\.zip$$' | grep -v '\.log\.zip$$' | xargs git add
+
 
 #	git add $(OVERVIEW_FILES)
 #	find scores -type f -name '*.txt' | xargs git add

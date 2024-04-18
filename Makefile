@@ -33,6 +33,7 @@ update-git:
 	cd models && git ls-files --others --exclude-standard | grep '\.output$$' | xargs git add
 	cd models && git ls-files --others --exclude-standard | grep '\.evalfiles.zip$$' | xargs git add
 	cd models && git ls-files --others --exclude-standard | grep '\.logfiles$$' | xargs git add
+	cd models && git ls-files --others --exclude-standard | grep '\.info$$' | xargs git add
 #	cd models && git ls-files --others --exclude-standard | grep '\.eval$$' | xargs git add
 #	cd models && git ls-files --others --exclude-standard | grep '\.zip$$' | \
 #	grep -v '\.eval\.zip$$' | grep -v '\.log\.zip$$' | xargs git add

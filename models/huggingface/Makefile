@@ -29,6 +29,12 @@ MODEL_SRCLANG    := $(word 2,$(subst ${COMMA}, ,${MODEL_INFO}))
 MODEL_TRGLANG    := $(word 3,$(subst ${COMMA}, ,${MODEL_INFO}))
 
 
+MODEL_INFO_FILES := $(patsubst huggingface/%,%.info,${MODELS})
+MODEL_INFO_FILE  := $(patsubst huggingface/%,%.info,${MODEL})
+MODEL_SRCLANGS   := $(shell grep '^$(patsubst huggingface/%,%,${MODEL}),' ${MODELS_FILE} | cut -f2 -d,)
+MODEL_TRGLANGS   := $(shell grep '^$(patsubst huggingface/%,%,${MODEL}),' ${MODELS_FILE} | cut -f3 -d,)
+
+
 ## translate the HF SRCID and TRGID to 3-letter codes we use for our testsets
 
 TESTSET_SRCLANG  := $(shell iso639 -3 -k ${MODEL_SRCLANG})
@@ -81,6 +87,25 @@ all-big:
 .PHONY: fetch-model
 fetch-model:
 	@echo "nothing to be done"
+
+.PHONY: model-info
+model-info: ${MODEL_INFO_FILE}
+
+.PHONY: all-model-infos
+all-model-infos: ${MODEL_INFO_FILES}
+
+${MODEL_INFO_FILES}:
+	-python3 modelsize.py --model $(@:.info=) > $@
+	echo "source_languages: $(shell grep '^${@:.info=},' ${MODELS_FILE} | cut -f2 -d,)" >> $@
+	echo "target_languages: $(shell grep '^${@:.info=},' ${MODELS_FILE} | cut -f3 -d,)" >> $@
+	echo "nr_source_languages: $(words $(shell grep '^${@:.info=},' ${MODELS_FILE} | cut -f2 -d,))" >> $@
+	echo "nr_target_languages: $(words $(shell grep '^${@:.info=},' ${MODELS_FILE} | cut -f3 -d,))" >> $@
+#	echo "source_languages: ${MODEL_SRCLANGS}" >> $@
+#	echo "target_languages: ${MODEL_TRGLANGS}" >> $@
+#	echo "nr_source_languages: $(words ${MODEL_SRCLANGS})" >> $@
+#	echo "nr_target_languages: $(words ${MODEL_TRGLANGS})" >> $@
+
+
 
 .PHONY: translate
 translate: ${SYSTEM_OUTPUT}

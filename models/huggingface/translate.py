@@ -24,3 +24,7 @@ translation_pipeline = pipeline('translation',
 
 for output in translation_pipeline(text, batch_size=args.batch_size):
     print(output['translation_text'])
+
+
+# print(translation_pipeline.model.num_parameters())
+

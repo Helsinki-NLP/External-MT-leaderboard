@@ -9,7 +9,8 @@ all: scores
 	find scores -name '*unsorted*' -empty -delete
 	${MAKE} -s updated-leaderboards
 	${MAKE} -s overview-files
-#	find scores -name '*.txt' | grep -v unsorted | xargs git add
+	${MAKE} update-git
+	${MAKE} push-and-commit-git
 
 
 .PHONY: all-langpairs

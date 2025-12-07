@@ -13,7 +13,7 @@ non_parameter_keys = ["special:model.yml"]
 
 def main():
   args = parse_args()
-  model = np.load(args.model)
+  model = np.load(args.model,allow_pickle=True)
 
   file_size=os.path.getsize(args.model)
 

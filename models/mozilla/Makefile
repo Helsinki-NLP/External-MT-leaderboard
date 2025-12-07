@@ -71,15 +71,19 @@ model-info: ${MODEL_INFO_FILE}
 .PHONY: all-model-infos
 all-model-infos: ${MODEL_INFO_FILES}
 
+# https://github.com/mozilla/firefox-translations-models/tree/main/models/tiny/azen
+
 ${MODEL_INFO_FILES}: %.info:
-	mkdir -p $@.d
-	-wget -qq -O $@.d/model.npz model.been.intgemm.alphas.bin.gz
-	-../../tools/model_info.py --summary --model $@.d/*.npz > $@
+	zcat firefox-translations-models/models/$(subst _,/,$(@:.info=))/*alphas.bin.gz \
+	| wc --bytes | numfmt --to=iec | sed 's/^/filesize: /' > $@
+	grep '"parameters":' firefox-translations-models/models/$(subst _,/,$(@:.info=))/metadata.json \
+	| cut -f2 -d\: | sed 's/^ *//' | numfmt --to=iec | sed 's/^/parameters: /' >> $@
 	echo "source languages: ${SRC_LANGS}" >> $@
 	echo "target languages: ${TRG_LANGS}" >> $@
 	echo "nr_source languages: 1" >> $@
 	echo "nr_target languages: 1" >> $@
-	rm -fr $@.d
+	echo "download link: ${MODEL_STORAGE}/$(subst _,/,$(@:.info=))" >> $@
+
 
 #-------------------------------------------------
 # fetch model and get supported languages
